@@ -105,5 +105,6 @@ makeTable($db, 'LTI_Resources', Array(
 
 // Modules
 require_once('mod/response/db.php');
+require_once('mod/wall/db.php');
 
 ?>

@@ -68,7 +68,7 @@ echo("</pre>\n");
 */
 
 // Do this by hand to switch away from cookie based sessions.
-$location = addSession('mod/response/index.php');
+$location = addSession('mod/wall/index.php');
 doRedirect($location);
 
 
