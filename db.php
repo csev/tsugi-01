@@ -1,6 +1,7 @@
 <?php
 require_once "config.php";
 require_once "lib/foorm.php";
+require_once "lib/module.php";
 
 global $db;
 
@@ -103,8 +104,11 @@ makeTable($db, 'LTI_Resources', Array(
     )
 );
 
-// Modules
-require_once('mod/response/db.php');
-require_once('mod/wall/db.php');
-
+$modules = getModules();
+foreach ( $modules as $module ) {
+   $db_file = $CFG->dirroot . "/mod/" . $module . "/db.php";
+    if ( is_file($db_file) ) {
+        require_once($db_file);
+    }
+}
 ?>

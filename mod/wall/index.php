@@ -1,20 +1,9 @@
 <?php
 require_once("../../config.php");
-require_once $CFG->dirroot.'/lib/lti_util.php';
-
-// Get our session setup without a cookie
-session_start();
-// We want this to come from the session, not from the secret - this is not launchable
-$context = new LTI(rand()+"xyzzy", true, false);
-
+$context = moduleContext();
 if ( ! $context->valid ) {
    die("Basic LTI Session failure ".$_SERVER['PHP_SELF']);
 }
-
-require_once $CFG->dirroot.'/db.php';
-require_once $CFG->dirroot.'/pdo_util.php';
-
-setupPrimaryKeys($db, $context);
 
 if ( $_POST['response'] ) {
         date_default_timezone_set('EST');

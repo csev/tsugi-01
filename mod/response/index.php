@@ -1,19 +1,11 @@
 <?php
 require_once("../../config.php");
-require_once $CFG->dirroot.'/lib/lti_util.php';
-require_once 'response_util.php';
 
-// Get our session setup without a cookie
-$context = establishContext();
-
+// Get our session setup
+$context = moduleContext();
 if ( ! $context->valid ) {
-   die("Basic LTI Session failure ".$_SERVER['PHP_SELF']);
+   die("Session failure ".$_SERVER['PHP_SELF']);
 }
-
-require_once $CFG->dirroot.'/db.php';
-require_once $CFG->dirroot.'/pdo_util.php';
-
-setupPrimaryKeys($db, $context);
 
 if ( $_POST['response'] ) {
     $sql = sprintf("SELECT * FROM Responses WHERE resource_id=%s AND user_id=%s LIMIT 1\n",
@@ -63,26 +55,9 @@ if ( $_POST['response'] ) {
     return;
 }
 
-header('Content-Type: text/html; charset=utf-8');
-?>
-<html>
-<head><title>
-<?php echo $context->getCourseName; echo " "; echo $context->getResourceTitle(); ?>
-</title> 
-<?php doCSS($context); ?>
-<script type="text/javascript" src="<?php echo($CFG->wwwroot); ?>/static/js/jquery.min.js">
-</script>
-</head> 
-<body>
-<?php
-if ( isset($_SESSION['err']) ) {
-    echo '<p style="color:red">'.$_SESSION['err']."</p>\n";
-    unset($_SESSION['err']);
-}
-if ( isset($_SESSION['success']) ) {
-    echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
-    unset($_SESSION['success']);
-}
+// Switch to view / controller
+headContent();
+flashMessages();
 
 if ( $context->isInstructor() ) {
     $sql = sprintf("SELECT * FROM Responses JOIN LTI_Users

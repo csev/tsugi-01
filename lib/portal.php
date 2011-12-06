@@ -11,6 +11,16 @@ function flashMessages() {
     }
 }
 
+function doCSS($context=false) {
+    global $CFG;
+    echo '<link rel="stylesheet" type="text/css" href="'.$CFG->wwwroot.'/static/css/default.css" />'."\n";
+    if ( $context !== false ) {
+        foreach ( $context->getCSS() as $css ) {
+            echo '<link rel="stylesheet" type="text/css" href="'.$css.'" />'."\n";
+        }
+    }
+}
+
 // TODO: deal with headers sent...
 function requireLogin() {
     global $CFG;
@@ -34,11 +44,14 @@ function headContent($head=false) {
     global $HEAD_CONTENT_SENT;
     global $CFG;
     if ( $HEAD_CONTENT_SENT === true ) return;
+    header('Content-Type: text/html; charset=utf-8');
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
   <head>
    <link href="<?php echo($CFG->wwwroot); ?>/static/css/default.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="<?php echo($CFG->wwwroot); ?>/static/js/jquery.min.js">
+    </script>
 <?php if ( $head !== false ) echo($head); ?>
   </head>
 <body>
@@ -62,10 +75,16 @@ function adminMenu() {
 function userMenu() {
     global $CFG;
     headContent();
+    $modules = getModules();
     echo('<div id="header">');
     echo('<h1><a href="http://www.imsglobal.org/" target="_new">L.M.S.</a></h1>');
     echo('<ul>');
     if ( strlen($_SESSION['user_name']) > 0 ) {
+        if ( isset($_GET['id']) ) {
+            foreach ( $modules as $module ) {
+                echo('<li><a href="course.php?id='.$_GET['id'].'&mod='.$module.'">'.ucwords($module).'</a></li>');
+            }
+        }
         echo('<li><a href="'.$CFG->wwwroot.'/courses.php">Courses</a></li>');
         echo('<li><a href="'.$CFG->wwwroot.'/logout.php">Logout');
         echo(' ('.$_SESSION['user_name'].')');

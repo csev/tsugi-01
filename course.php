@@ -13,6 +13,12 @@ if ( ! isset($_GET['id']) ) {
     return;
 }
 
+if ( ! isset($_GET['mod']) ) {
+    $_SESSION['err'] = 'Missing value for mod';
+    header( 'Location: error.php' ) ;
+    return;
+}
+
 $sql = sprintf("SELECT name,lkey,id FROM LTI_Courses WHERE id=%s AND key_id=%s", 
     $db->quote($_GET['id']),$CFG->localkeyid) ;
 $q = $db->query($sql);
@@ -23,8 +29,9 @@ if ( ! $course ) {
     return;
 }
 ?>
-<iframe name="basicltiLaunchFrame"  id="basicltiLaunchFrame" src="launch.php?id=<?php echo($_GET['id']); ?>"
-width="100%" height="600" scrolling="auto" frameborder="1" transparency>
+<iframe name="basicltiLaunchFrame"  id="basicltiLaunchFrame" 
+  src="launch.php?id=<?php echo($_GET['id']); ?>&mod=<?php echo($_GET['mod']); ?>"
+  width="100%" height="600" scrolling="auto" frameborder="1" transparency>
 <p>frames_required</p>
 </iframe>
 

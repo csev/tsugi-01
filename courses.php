@@ -16,10 +16,14 @@ $first = true;
 <div id="medium-dialog">
 <?php
 
+$modules = getModules();
+$module = false;
+if ( count($modules) > 0 ) $module = $modules[0];
+if (in_array("wall", $modules) ) $module = "wall";
 while ( $q && $row = $q->fetch() ) {
     if ( $first ) {
         echo '<center><table>'."\n";
-        echo("<tr><th>Course Name</th><th>Course Key</th><th>Action</th></tr>\n");
+        echo("<tr><th>Course Name</th><th>Course Key</th><th>Tools</th></tr>\n");
         $first = false;
     }
     echo "<tr><td>";
@@ -27,7 +31,11 @@ while ( $q && $row = $q->fetch() ) {
     echo("</td><td>");
     echo(htmlentities($row[1]));
     echo("</td><td>\n");
-    echo('<a href="course.php?id='.htmlentities($row[2]).'">Launch</a>');
+    if ( $module === false ) {
+        echo('No Modules Found.');
+    } else {
+        echo('<a href="course.php?id='.htmlentities($row[2]).'&mod='.$module.'">Launch</a> ');
+    }
     echo("</td></tr>\n");
 }
 

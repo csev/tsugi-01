@@ -1,7 +1,29 @@
+INSTALLATON
+------------
+
 See index.php for installation / setup instructions.
 
-A tiny change by Chuck.This will be my first official change from alex
+SIMPLE TEST PLAN
+----------------
+Login as admin / imslti.   Make a course, make a user and enroll the user as 
+Instructor in the course.  Leav admin and log in as the user.  Play with the
+tools.
 
-test change-agnesliu
+DEVELOPER NOTES
+---------------
+At the beginning of each of the module files add the following code:
 
-kyle yo
+require_once("../../config.php");
+$context = moduleContext();
+if ( ! $context->valid ) {
+   die("Basic LTI Session failure ".$_SERVER['PHP_SELF']);
+}
+
+This effectively logs the user in and makes a nice variable that has tons of information.
+See the Test tool for a dump of the context information.
+
+Look at the response and wall tools to see how to set up the db.php file to auto-create
+your needed databases.
+
+To make a new tool, make a new folder under the 'mod' folder and add an 'index.php' and
+(usually) a 'db.php' and off you go.

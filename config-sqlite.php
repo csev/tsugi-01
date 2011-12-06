@@ -5,7 +5,7 @@ global $CFG;
 $CFG = new stdClass();
 
 // No trailing slash
-$CFG->wwwroot = 'http://localhost/~csev/tsugi';
+$CFG->wwwroot = 'http://localhost:8888/tsugi';
 
 $CFG->dirroot = realpath(dirname(__FILE__));
 

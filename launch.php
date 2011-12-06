@@ -51,7 +51,7 @@ $_SESSION['_lti_context'] = Array(
             'lis_person_sourcedid' => 'localhost.edu::'.$user['id'],
             'context_id' => $course['lkey'],
             'context_title' => $course['name'],
-            'context_label' => $course['lkey'],
+            'context_label' => $course['name'],
             'tool_consumer_info_product_family_code' => 'ims',
             'tool_consumer_info_version' => '1.1',
             'tool_consumer_instance_guid' => 'www.imsglobal.org',
@@ -68,7 +68,7 @@ echo("</pre>\n");
 */
 
 // Do this by hand to switch away from cookie based sessions.
-$location = addSession('mod/wall/index.php');
+$location = addSession('mod/'.$_REQUEST['mod'].'/index.php');
 doRedirect($location);
 
 
