@@ -29,7 +29,6 @@
 
 # OS generated files #
 ######################
-.DS_Store
 .DS_Store*
 ehthumbs.db
 Icon?
@@ -37,3 +36,5 @@ Thumbs.db
 config.php
 
 .DS_Store
+
+config.php
