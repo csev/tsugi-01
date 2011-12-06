@@ -32,7 +32,6 @@ if ( $_POST['response'] ) {
         }
 }
 
-
 $sql = sprintf("SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;");
 $q = $db->query($sql);
 $first = true;
