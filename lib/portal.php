@@ -72,12 +72,13 @@ function adminMenu() {
     echo("</ul></div>\n");
 }
 
-function userMenu() {
+function userMenu($title=false) {
     global $CFG;
     headContent();
     $modules = getModules();
     echo('<div id="header">');
-    echo('<h1><a href="http://www.imsglobal.org/" target="_new">L.M.S.</a></h1>');
+    if ( $title === false ) $title = 'L.M.S.';
+    echo('<h1><a href="http://www.imsglobal.org/" target="_new">'.$title.'</a></h1>');
     echo('<ul>');
     if ( strlen($_SESSION['user_name']) > 0 ) {
         if ( isset($_GET['id']) ) {

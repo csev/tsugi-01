@@ -8,10 +8,9 @@ if ( ! $context->valid ) {
 }
 
 if ( $_POST['response'] ) {
-    $sql = sprintf("SELECT * FROM Responses WHERE resource_id=%s AND user_id=%s LIMIT 1\n",
-            $db->quote($context->getResourceID()), $db->quote($context->getUserID()) );
-    
-    $q = @$db->query($sql);
+    $sql = "SELECT * FROM Responses WHERE resource_id=? AND user_id=? LIMIT 1";
+    $q = $db->prepare($sql);
+    $success = $q->execute(Array($context->getResourceID(), $context->getUserID()) );
     $response = $q->fetch();
     if ( $response ) {
 
@@ -21,17 +20,20 @@ if ( $_POST['response'] ) {
               $response['sourcedid'] != $context->getOutcomeSourceDID() ) ) {
 
             if ( strlen($context->getOutcomeSourceDID()) > 0 ) {
-                $sql = sprintf("UPDATE Responses SET data=%s, sourcedid=%s 
-                                WHERE resource_id=%s AND user_id=%s\n",
-                    $db->quote($_POST['response']), $db->quote($context->getOutcomeSourceDID()),
-                    $db->quote($context->getResourceID()), $db->quote($context->getUserID()) );
+                $sql = "UPDATE Responses SET data=?, sourcedid=? 
+                                WHERE resource_id=? AND user_id=?";
+                    $q = $db->prepare($sql);
+                    $success = $q->execute(Array($_POST['response'], $context->getOutcomeSourceDID(),
+                            $context->getResourceID(), $context->getUserID()) );
             } else {
-                $sql = sprintf("UPDATE Responses SET data=%s WHERE resource_id=%s AND user_id=%s\n",
-                    $db->quote($_POST['response']), 
-                    $db->quote($context->getResourceID()), $db->quote($context->getUserID()) );
+                $sql = "UPDATE Responses SET data=? 
+                                WHERE resource_id=? AND user_id=?";
+                    $q = $db->prepare($sql);
+                    $success = $q->execute(Array($_POST['response'], 
+                            $context->getResourceID(), $context->getUserID()) );
             }
             // echo($sql);flush();
-            $rows = $db->exec($sql);
+            if ($success) $rows = $q->rowCount();
             if ( $rows > 0 ) {
                 $_SESSION['success'] = 'Data updated';
             } else { 
@@ -39,12 +41,12 @@ if ( $_POST['response'] ) {
             }
         }
     } else {
-        $sql = sprintf("INSERT INTO Responses (resource_id, user_id, data, sourcedid) 
-                        VALUES (%s, %s, %s, %s)\n",
-            $db->quote($context->getResourceID()), $db->quote($context->getUserID()),
-            $db->quote($_POST['response']), $db->quote($context->getOutcomeSourceDID()) );
+        $sql = "INSERT INTO Responses (resource_id, user_id, data, sourcedid) VALUES (?, ?, ?, ?)";
+        $q = $db->prepare($sql);
+        $success = $q->execute(Array($context->getResourceID(), $context->getUserID(),
+            $_POST['response'], $context->getOutcomeSourceDID()) );
         // echo($sql);flush();
-        $rows = $db->exec($sql);
+        if ($success) $rows = $q->rowCount();
         if ( $rows > 0 ) {
             $_SESSION['success'] = 'Data inserted';
         } else { 
@@ -60,10 +62,10 @@ headContent();
 flashMessages();
 
 if ( $context->isInstructor() ) {
-    $sql = sprintf("SELECT * FROM Responses JOIN LTI_Users
-                    ON Responses.user_id = LTI_Users.id WHERE resource_id=%s\n",
-            $db->quote($context->getResourceID()));
-    $q = @$db->query($sql);
+    $sql = "SELECT * FROM Responses JOIN LTI_Users
+                    ON Responses.user_id = LTI_Users.id WHERE resource_id=?";
+    $q = $db->prepare($sql);
+    $success = $q->execute(Array($context->getResourceID()));
     $first = true;
     while ( $response = $q->fetch() ) {
         if ( $first ) {
@@ -91,10 +93,9 @@ if ( $context->isInstructor() ) {
     }
 }
 
-$sql = sprintf("SELECT * FROM Responses WHERE resource_id=%s AND user_id=%s LIMIT 1\n",
-        $db->quote($context->getResourceID()), $db->quote($context->getUserID()) );
-
-$q = @$db->query($sql);
+$sql = "SELECT * FROM Responses WHERE resource_id=? AND user_id=? LIMIT 1";
+$q = $db->prepare($sql);
+$success = $q->execute(Array($context->getResourceID(), $context->getUserID()));
 $response = $q->fetch();
 $text = false;
 if ( $response ) {

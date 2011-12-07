@@ -20,21 +20,21 @@ if ( !isset($_REQUEST['response_id']) ) die("Missing required parameter");
 // This will only work if we are grading the response for the resource associated
 // With this context/launch/ etc - We take the ResourceID from the context
 
-$sql = sprintf("SELECT * FROM Responses JOIN LTI_Users JOIN LTI_Resources 
+$sql = "SELECT * FROM Responses JOIN LTI_Users JOIN LTI_Resources 
         ON Responses.user_id = LTI_Users.id AND Responses.resource_id = LTI_Resources.id
-        WHERE resource_id=%s AND Responses.id=%s\n",
-    $db->quote($context->getResourceID()), $db->quote($_REQUEST['response_id']) );
-$q = @$db->query($sql);
+        WHERE resource_id=? AND Responses.id=?\n";
+$q = $db->prepare($sql);
+$success = $q->execute(Array($context->getResourceID(), $_REQUEST['response_id']));
 $response = $q->fetch();
 if ( ! $response ) die("Response not found");
-// print "\n<pre>\n"; print_r($response); print "\n</pre>\n";
+// print "\n<pre>\n"; print_r($response); print "\n</pre>\n";flush();
 
 if ( $_POST['grade'] || $_POST['note'] ) {
     if ($_POST['grade'] != $response['grade'] || $_POST['note'] != $response['note'] ) {
-        $sql = sprintf("UPDATE Responses SET note=%s, grade=%s WHERE id=%s\n",
-            $db->quote($_POST['note']), $db->quote($_POST['grade']),
-            $db->quote($_REQUEST['response_id']));
-        $rows = $db->exec($sql);
+        $sql = "UPDATE Responses SET note=?, grade=? WHERE id=?";
+        $q = $db->prepare($sql);
+        $success = $q->execute(Array($_POST['note'], $_POST['grade'],$_REQUEST['response_id']));
+        if ($success) $rows = $q->rowCount();
         if ( $rows < 1 ) {
             $_SESSION['err'] = 'Unable to update Grade';
             $context->redirect('index.php');

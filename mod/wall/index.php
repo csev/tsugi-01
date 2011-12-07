@@ -7,13 +7,11 @@ if ( ! $context->valid ) {
 
 if ( $_POST['response'] ) {
         date_default_timezone_set('EST');
-        $sql = sprintf("INSERT INTO Announcements (user_id, data, datetime) 
-                        VALUES (%s, %s, %s)\n",
-            $db->quote($_SESSION['user_id']),
-            $db->quote($_POST['response']),
-            $db->quote(date('M d, Y g:i a')) );
+        $sql = "INSERT INTO Announcements (user_id, data, datetime) VALUES (?, ?, ?)";
+        $q = $db->prepare($sql);
+        $success = $q->execute(Array($_SESSION['user_id'],$_POST['response'],date('M d, Y g:i a') ));
         // echo($sql);flush();
-        $rows = $db->exec($sql);
+        if ( $success) $rows = $q->rowCount();
         if ( $rows > 0 ) {
             $_SESSION['success'] = 'Data inserted';
         } else { 
