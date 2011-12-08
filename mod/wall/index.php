@@ -6,22 +6,31 @@ if ( ! $context->valid ) {
 }
 
 if ( $_POST['response'] ) {
-        date_default_timezone_set('EST');
-        $sql = "INSERT INTO Announcements (user_id, data, datetime) VALUES (?, ?, ?)";
-        $q = $db->prepare($sql);
-        $success = $q->execute(Array($_SESSION['user_id'],$_POST['response'],date('M d, Y g:i a') ));
-        // echo($sql);flush();
-        if ( $success) $rows = $q->rowCount();
-        if ( $rows > 0 ) {
-            $_SESSION['success'] = 'Data inserted';
-        } else { 
-            $_SESSION['err'] = 'Unable to insert data ';
-        }
+    date_default_timezone_set('EST');
+    $sql = "INSERT INTO Announcements (user_id, data, datetime) VALUES (?, ?, ?)";
+    $q = $db->prepare($sql);
+    $success = $q->execute(Array($_SESSION['user_id'],$_POST['response'],date('M d, Y g:i a') ));
+    // echo($sql);flush();
+    if ( $success) $rows = $q->rowCount();
+    if ( $rows > 0 ) {
+        $_SESSION['success'] = 'Data inserted';
+    } else { 
+        $_SESSION['err'] = 'Unable to insert data ';
+    }
+}
 
-if ( $_POST['uploadedfile'] ) {
-
-        }        
-
+if ( $_POST['MAX_FILE_SIZE'] ) {
+    $target_path = $CFG->wwwroot;
+    $target_path = $target_path . basename( $_FILES['file']['name']);
+    
+    if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
+        //$_SESSION['success'] = 'Data inserted';
+        echo "The file ".  basename( $_FILES['file']['name']). 
+        " has been uploaded";
+    } else{
+        //$_SESSION['err'] = 'Unable to insert data '.$CFG->wwwroot;
+        echo "There was an error uploading the file, please try again!";
+    }
 }
 
 $sql = "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;";
@@ -43,7 +52,7 @@ flashMessages();
 </form>
 <form enctype="multipart/form-data" method="post">
 <input type="hidden" name="MAX_FILE_SIZE" value="100000" />
-Choose a file to upload: <input name="uploadedfile" type="file" /><br />
+Choose a file to upload: <input name="file" type="file" id="file"/><br />
 <input type="submit" value="Upload File" />
 </form>
 <p><table>
