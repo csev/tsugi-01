@@ -7,16 +7,19 @@ if ( ! $context->valid ) {
 
 if ( $_POST['response'] ) {
     date_default_timezone_set('EST');
-    $sql = "INSERT INTO Announcements (user_id, data, datetime) VALUES (?, ?, ?)";
-    $q = $db->prepare($sql);
-    $success = $q->execute(Array($_SESSION['user_id'],$_POST['response'],date('M d, Y g:i a') ));
-    // echo($sql);flush();
-    if ( $success) $rows = $q->rowCount();
-    if ( $rows > 0 ) {
-        $_SESSION['success'] = 'Data inserted';
-    } else { 
-        $_SESSION['err'] = 'Unable to insert data ';
-    }
+    $responseData = $_POST['response'];
+    postToWall($db,$responseData);
+
+    //$sql = "INSERT INTO Announcements (user_id, data, datetime) VALUES (?, ?, ?)";
+    //$q = $db->prepare($sql);
+    //$success = $q->execute(Array($_SESSION['user_id'],$_POST['response'],date('M d, Y g:i a') ));
+    //-- echo($sql);flush();
+    //if ( $success) $rows = $q->rowCount();
+    //if ( $rows > 0 ) {
+    //    $_SESSION['success'] = 'Data inserted';
+    //} else { 
+    //    $_SESSION['err'] = 'Unable to insert data ';
+    //}
 }
 
 if ( $_POST['MAX_FILE_SIZE'] ) {
