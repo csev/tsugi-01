@@ -1,5 +1,5 @@
 <?php
-require_once "config.php";
+require_once __DIR__."/config.php";
 require_once "lib/foorm.php";
 require_once "lib/module.php";
 
