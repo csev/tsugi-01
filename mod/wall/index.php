@@ -24,9 +24,10 @@ if ( $_POST['response'] ) {
 
 if ( $_POST['MAX_FILE_SIZE'] ) {
     $target_path = $CFG->wwwroot;
-    $target_path = $target_path . basename( $_FILES['file']['name']);
-    
-    if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
+    $target_path = $target_path . basename( $_FILES['uploadedfile']['name']);
+    echo($_FILES['uploadedfile']['name']);
+    move_uploaded_file($_FILES['uploadedfile']['name'], $CFG->wwwroot);
+    if(move_uploaded_file($_FILES['uploadedfile']['name'], $target_path)) {
         //$_SESSION['success'] = 'Data inserted';
         echo "The file ".  basename( $_FILES['file']['name']). 
         " has been uploaded";
@@ -55,7 +56,7 @@ flashMessages();
 </form>
 <form enctype="multipart/form-data" method="post">
 <input type="hidden" name="MAX_FILE_SIZE" value="100000" />
-Choose a file to upload: <input name="file" type="file" id="file"/><br />
+Choose a file to upload: <input name="uploadedfile" type="file" id="file"/><br />
 <input type="submit" value="Upload File" />
 </form>
 <p><table>
