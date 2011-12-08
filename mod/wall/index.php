@@ -17,6 +17,11 @@ if ( $_POST['response'] ) {
         } else { 
             $_SESSION['err'] = 'Unable to insert data ';
         }
+
+if ( $_POST['uploadedfile'] ) {
+        
+    }        
+
 }
 
 $sql = "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;";
@@ -36,6 +41,11 @@ flashMessages();
 </textarea><br/>
 <input type="submit" value="Post an Announcement">
 </form>
+<form enctype="multipart/form-data" method="post">
+<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+Choose a file to upload: <input name="uploadedfile" type="file" /><br />
+<input type="submit" value="Upload File" />
+</form>
 <p><table>
 <tr><th width=600>Recent Announcements</th></tr>
 
@@ -52,15 +62,10 @@ while ( $q && $row = $q->fetch() ) {
     }
 
     echo('</td><td width="570"><table width="570"><tr>');
-    
     echo("<td>".$row['name']." ".$row['datetime']."</td></tr>");
-
     echo("<tr><td>".htmlentities($row['data'])."</td></tr>");
-
     echo('<tr><td><a href="wall.php?reply?='.$row[0].'">Reply</a></td></tr></table>');
-
     echo("</td></tr></table>");
-
     echo("</td></tr>\n");
 }
 
