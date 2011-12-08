@@ -63,7 +63,7 @@ function adminMenu() {
     requireAdmin();
     global $CFG;
     headContent();
-    echo('<div id="header" style="background: yellow;">');
+    echo('<div id="adminheader">');
     echo('<h1>Admin Functions</h1>');
     echo("<ul>\n");
     echo('<li><a href="'.$CFG->wwwroot.'/users/index.php">Users</a><li>');

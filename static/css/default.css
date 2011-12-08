@@ -1,31 +1,58 @@
 body {
     font-family: century gothic;
-    background-color: #EAFFEB;
+    font-color: #417D7B;
+    height: 100%;
+    background: #EAFFEB;
+    background-repeat:no-repeat;
+    filter:
+    progid:DXImageTransform.Microsoft.gradient(startColorstr='#8FC4A6', 
+    endColorstr='#F2FFD2');
+    background: -moz-linear-gradient(bottom,  #8FC4A6,  #F2FFD2) fixed;
+    background: -webkit-gradient(linear, left bottom, left top, 
+    from(#8FC4A6), to(#F2FFD2)) fixed;
 }
 
-#gradient {
-}
-
-#header h1 a {
-    font-family: helvetica Neue;
-    text-decoration: none;
-    color: #709382;
-}
-
-h1, h2, h3, h4 {
-    margin-bottom: 0;
-    color: #709382;
-}
-
-#header {
-    border-top: 3px solid #36c;
+#adminheader {
+    background-color: #eee;
+    border-top: 3px solid #84C4B4;
     height: 100%;
     overflow:hidden;
     padding: 7px;
     margin-top: 5px;
     margin-bottom: 5px;
-    background-color: #C1FFEB;
+}
 
+#adminheader li {
+    font-size: 14px;
+    display: inline;
+    padding: 5px;
+}
+
+#adminheader h1 {
+    font-size: 20px;
+    float: left;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0 0 .2em .2em;
+}
+
+#adminheader ul {
+    list-style: none;
+    float: right;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+}
+
+#header h1 a {
+    font-family: helvetica Neue;
+    text-decoration: none;
+    color: #417D7B;
+}
+
+h1, h2, h3, h4 {
+    margin-bottom: 0;
+    color: #417D7B;
 }
 
 #header h1 {
