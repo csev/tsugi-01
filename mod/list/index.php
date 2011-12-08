@@ -13,18 +13,26 @@ if(!empty($_POST['task_id']) )
     $ids=$_POST['task_id'];
     foreach($ids as $id)
     {
-        mysql_query("DELETE FROM tasks WHERE id='$id'");
+        $sql = "DELETE FROM Tasks WHERE id=?";
+        $q = $db->prepare($sql);
+        $success = $q->execute(Array($id));
+        if ( ! $success ) {
+            $arr = $q->errorInfo();
+            $_SESSION['err'] = 'Unable to delete task '.$arr[2];
+        }
     }
-    $_SESSION['success'] = 'Delete finished tasks';
-    header( 'Location: index.php' );
+    $context->redirect('index.php');
     return;
 }
+flashMessages();
 echo "<form method='post'>";
 echo '<table border="1">' . "\n";
 $uid=$_SESSION['user_id'];
-$result=mysql_query("SELECT id,title FROM tasks where user_id='$uid'");
 
-while($row=mysql_fetch_row($result))
+$sql = "SELECT id,title FROM Tasks WHERE user_id=?";
+$q = $db->prepare($sql);
+$success = $q->execute(Array($uid));
+while($row=$q->fetch())
 {
     $id=$row[0];
     echo "<tr>";
