@@ -20,5 +20,6 @@ $CFG->defaultkeyid = -2;   // For dev launches when there are no LTI_Keys define
 
 require_once(dirname(__FILE__) . '/lib/setup.php');
 require_once(dirname(__FILE__) . '/lib/portal.php');
+require_once(dirname(__FILE__) . '/lib/module.php');
 
 // No trailing tag to avoid white space
