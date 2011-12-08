@@ -1,24 +1,31 @@
 body {
-    font-family: sans-serif;
+    font-family: century gothic;
+    background-color: #EAFFEB;
+}
+
+#gradient {
 }
 
 #header h1 a {
+    font-family: helvetica Neue;
     text-decoration: none;
-    color: black;
+    color: #709382;
 }
 
 h1, h2, h3, h4 {
     margin-bottom: 0;
+    color: #709382;
 }
 
 #header {
-    background-color: #dde;
     border-top: 3px solid #36c;
     height: 100%;
     overflow:hidden;
     padding: 7px;
     margin-top: 5px;
     margin-bottom: 5px;
+    background-color: #C1FFEB;
+
 }
 
 #header h1 {
@@ -65,7 +72,7 @@ td {
 #small-dialog-container {
 	margin:50px 0px; padding:0px;
 	text-align:center;
-	}
+}
 	
 #small-dialog {
 	width:400px;
@@ -74,12 +81,12 @@ td {
 	padding:15px;
 	border:1px dashed #333;
 	background-color:#eee;
-	}
+}
 
 #medium-dialog-container {
 	margin:50px 0px; padding:0px;
 	text-align:center;
-	}
+}
 	
 #medium-dialog {
 	width:90%;
@@ -88,4 +95,4 @@ td {
 	padding:15px;
 	border:1px dashed #333;
 	background-color:#eee;
-	}
+}
