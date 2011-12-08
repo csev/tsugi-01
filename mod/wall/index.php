@@ -19,8 +19,8 @@ if ( $_POST['response'] ) {
         }
 
 if ( $_POST['uploadedfile'] ) {
-        
-    }        
+
+        }        
 
 }
 
