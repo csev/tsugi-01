@@ -83,7 +83,11 @@ function userMenu($title=false) {
     if ( strlen($_SESSION['user_name']) > 0 ) {
         if ( isset($_GET['id']) ) {
             foreach ( $modules as $module ) {
-                echo('<li><a href="course.php?id='.$_GET['id'].'&mod='.$module.'">'.ucwords($module).'</a></li>');
+                if ( is_file($CFG->dirroot.'/mod/'.$module.'/index.php') ) {
+                    echo('<li><a href="course.php?id='.$_GET['id'].'&mod='.$module.'">'.ucwords($module).'</a></li>');
+                } else {
+                    echo('<li>'.ucwords($module).'</li>');
+                }
             }
         }
         echo('<li><a href="'.$CFG->wwwroot.'/courses.php">Courses</a></li>');
