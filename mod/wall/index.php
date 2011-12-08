@@ -19,8 +19,10 @@ if ( $_POST['response'] ) {
         }
 }
 
-$sql = sprintf("SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;");
-$q = $db->query($sql);
+$sql = "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;";
+$q = $db->prepare($sql);
+$q->execute();
+
 $first = true;
 
 flashMessages();
@@ -44,7 +46,7 @@ while ( $q && $row = $q->fetch() ) {
         $first = false;
     }
     echo ("<tr><td>");
-    echo ('<table style="background:white; border:0px;" class="announcement-feed-post"><tr><td width="30">');
+    echo ('<table class="announcement-feed-post"><tr><td width="30">');
     if ( strlen($row['image']) > 0 ) {
         echo('<img src="'.$row['image'].'" width="30" height="30" style="float:left">');
     }
