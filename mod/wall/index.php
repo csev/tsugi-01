@@ -24,16 +24,20 @@ if ( $_POST['response'] ) {
 
 if ( $_POST['MAX_FILE_SIZE'] ) {
     $target_path = $CFG->wwwroot;
-    $target_path = $target_path . basename( $_FILES['uploadedfile']['name']);
-    echo($_FILES['uploadedfile']['name']);
-    move_uploaded_file($_FILES['uploadedfile']['name'], $CFG->wwwroot);
-    if(move_uploaded_file($_FILES['uploadedfile']['name'], $target_path)) {
+    $target_path = $target_path . "/" . basename( $_FILES['uploadedFile']['name']);
+    echo "Upload: " . $_FILES["uploadedFile"]["name"] . "<br />";
+    echo "Type: " . $_FILES["uploadedFile"]["type"] . "<br />";
+    echo "Size: " . ($_FILES["uploadedFile"]["size"] / 1024) . " Kb<br />";
+    echo "Stored in: " . $_FILES["uploadedFile"]["tmp_name"] . "<br />";
+    echo $target_path . "<br />";
+
+    if (move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $target_path) ) {
         //$_SESSION['success'] = 'Data inserted';
-        echo "The file ".  basename( $_FILES['file']['name']). 
+        echo "The file ".  basename( $_FILES['uploadedFile']['name']). 
         " has been uploaded";
     } else{
         //$_SESSION['err'] = 'Unable to insert data '.$CFG->wwwroot;
-        echo "There was an error uploading the file, please try again!";
+        echo "Unable to insert data -- Error " .$_FILES['uploadedFile']['error'];
     }
 }
 
@@ -46,8 +50,7 @@ $first = true;
 flashMessages();
 
 ?>
-<div id="medium-dialog-container">
-<div id="medium-dialog">
+
 <center>
 <form  method="post">
 <textarea name="response" rows="10" cols="84">
@@ -56,7 +59,7 @@ flashMessages();
 </form>
 <form enctype="multipart/form-data" method="post">
 <input type="hidden" name="MAX_FILE_SIZE" value="100000" />
-Choose a file to upload: <input name="uploadedfile" type="file" id="file"/><br />
+Choose a file to upload: <input name="uploadedFile" type="file" id="uploadedFile"/><br />
 <input type="submit" value="Upload File" />
 </form>
 <p><table>
