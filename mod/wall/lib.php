@@ -1,7 +1,7 @@
 <?php
 
 function postToWall($db,$responseData) {
-    
+
     date_default_timezone_set('EST');
     $sql = "INSERT INTO Announcements (user_id, data, datetime) VALUES (?, ?, ?)";
     $q = $db->prepare($sql);
@@ -17,5 +17,3 @@ function postToWall($db,$responseData) {
     }    
 
 }
-
-//Placeholder for additional announcement wall functions 
