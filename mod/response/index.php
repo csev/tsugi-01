@@ -8,9 +8,9 @@ if ( ! $context->valid ) {
 }
 
 if ( $_POST['response'] ) {
-    $sql = "SELECT * FROM Responses WHERE resource_id=? AND user_id=? LIMIT 1";
-    $q = $db->prepare($sql);
-    $success = $q->execute(Array($context->getResourceID(), $context->getUserID()) );
+    $q = pdoRun($db, 
+        "SELECT * FROM Responses WHERE resource_id=? AND user_id=? LIMIT 1", 
+        Array($context->getResourceID(), $context->getUserID()) );
     $response = $q->fetch();
     if ( $response ) {
 
@@ -20,20 +20,17 @@ if ( $_POST['response'] ) {
               $response['sourcedid'] != $context->getOutcomeSourceDID() ) ) {
 
             if ( strlen($context->getOutcomeSourceDID()) > 0 ) {
-                $sql = "UPDATE Responses SET data=?, sourcedid=? 
-                                WHERE resource_id=? AND user_id=?";
-                    $q = $db->prepare($sql);
-                    $success = $q->execute(Array($_POST['response'], $context->getOutcomeSourceDID(),
-                            $context->getResourceID(), $context->getUserID()) );
+                $q = pdoRun($db,
+                    "UPDATE Responses SET data=?, sourcedid=? WHERE resource_id=? AND user_id=?",
+                    Array($_POST['response'], $context->getOutcomeSourceDID(),
+                            $context->getResourceID(), $context->getUserID()) 
+                );
             } else {
-                $sql = "UPDATE Responses SET data=? 
-                                WHERE resource_id=? AND user_id=?";
-                    $q = $db->prepare($sql);
-                    $success = $q->execute(Array($_POST['response'], 
-                            $context->getResourceID(), $context->getUserID()) );
+                $q = pdoRun($db,"UPDATE Responses SET data=? WHERE resource_id=? AND user_id=?",
+                    Array($_POST['response'], $context->getResourceID(), $context->getUserID()) 
+                );
             }
-            // echo($sql);flush();
-            if ($success) $rows = $q->rowCount();
+            if ($q->success) $rows = $q->rowCount();
             if ( $rows > 0 ) {
                 $_SESSION['success'] = 'Data updated';
             } else { 
@@ -41,12 +38,12 @@ if ( $_POST['response'] ) {
             }
         }
     } else {
-        $sql = "INSERT INTO Responses (resource_id, user_id, data, sourcedid) VALUES (?, ?, ?, ?)";
-        $q = $db->prepare($sql);
-        $success = $q->execute(Array($context->getResourceID(), $context->getUserID(),
-            $_POST['response'], $context->getOutcomeSourceDID()) );
-        // echo($sql);flush();
-        if ($success) $rows = $q->rowCount();
+        $q = pdoRun($db,
+            "INSERT INTO Responses (resource_id, user_id, data, sourcedid) VALUES (?, ?, ?, ?)",
+            Array($context->getResourceID(), $context->getUserID(),
+            $_POST['response'], $context->getOutcomeSourceDID()) 
+        );
+        if ($q->success) $rows = $q->rowCount();
         if ( $rows > 0 ) {
             $_SESSION['success'] = 'Data inserted';
         } else { 
@@ -93,9 +90,10 @@ if ( $context->isInstructor() ) {
     }
 }
 
-$sql = "SELECT * FROM Responses WHERE resource_id=? AND user_id=? LIMIT 1";
-$q = $db->prepare($sql);
-$success = $q->execute(Array($context->getResourceID(), $context->getUserID()));
+$q = pdoRun($db,
+    "SELECT * FROM Responses WHERE resource_id=? AND user_id=? LIMIT 1",
+    Array($context->getResourceID(), $context->getUserID())
+);
 $response = $q->fetch();
 $text = false;
 if ( $response ) {

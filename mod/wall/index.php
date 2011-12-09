@@ -6,34 +6,12 @@ if ( ! $context->valid ) {
 }
 
 if ( $_POST['response'] ) {
-    date_default_timezone_set('EST');
     $responseData = $_POST['response'];
     postToWall($db,$responseData);
-
-    //$sql = "INSERT INTO Announcements (user_id, data, datetime) VALUES (?, ?, ?)";
-    //$q = $db->prepare($sql);
-    //$success = $q->execute(Array($_SESSION['user_id'],$_POST['response'],date('M d, Y g:i a') ));
-    //-- echo($sql);flush();
-    //if ( $success) $rows = $q->rowCount();
-    //if ( $rows > 0 ) {
-    //    $_SESSION['success'] = 'Data inserted';
-    //} else { 
-    //    $_SESSION['err'] = 'Unable to insert data ';
-    //}
 }
 
-if ( $_POST['MAX_FILE_SIZE'] ) {
-    $target_path = $CFG->wwwroot;
-    $target_path = $target_path . basename( $_FILES['file']['name']);
-    
-    if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
-        //$_SESSION['success'] = 'Data inserted';
-        echo "The file ".  basename( $_FILES['file']['name']). 
-        " has been uploaded";
-    } else{
-        //$_SESSION['err'] = 'Unable to insert data '.$CFG->wwwroot;
-        echo "There was an error uploading the file, please try again!";
-    }
+if ( $_FILES ) {
+    addFileToPost($db, $_FILES);
 }
 
 $sql = "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;";
@@ -45,8 +23,7 @@ $first = true;
 flashMessages();
 
 ?>
-<div id="medium-dialog-container">
-<div id="medium-dialog">
+
 <center>
 <form  method="post">
 <textarea name="response" rows="10" cols="84">
@@ -55,10 +32,10 @@ flashMessages();
 </form>
 <form enctype="multipart/form-data" method="post">
 <input type="hidden" name="MAX_FILE_SIZE" value="100000" />
-Choose a file to upload: <input name="file" type="file" id="file"/><br />
+Choose a file to upload: <input name="uploadedFile" type="file" id="uploadedFile"/><br />
 <input type="submit" value="Upload File" />
 </form>
-<p><table>
+<p><table border=1>
 <tr><th width=600>Recent Announcements</th></tr>
 
 <?php

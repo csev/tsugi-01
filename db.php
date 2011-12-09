@@ -111,4 +111,31 @@ foreach ( $modules as $module ) {
         require_once($db_file);
     }
 }
+
+// $arr can be empty(FALSE), a single item, or an array
+function pdoRun($db, $sql, $arr=FALSE) {
+    $q = FALSE;
+    $success = FALSE;
+    $message = '';
+    if ( $arr !== FALSE && ! is_array($arr) ) $arr = Array($arr);
+    try {
+        $q = $db->prepare($sql);
+        if ( $arr === FALSE ) {
+            $success = $q->execute();
+        } else { 
+            $success = $q->execute($arr);
+        }
+    } catch(Exception $e) {
+        $success = FALSE;
+        $message = $e->getMessage();
+    }
+    if ( $q === FALSE ) $q = stdClass();
+    if ( isset( $q->success ) ) die("PDO::Statement should not have success member");
+    $q->success = $success;
+    if ( !isset($q->errorCode) ) $q->errorCode = '42000';
+    if ( !isset($q->errorInfo) ) $q->errorInfo = Array('42000', '42000', $message);
+    return $q;
+}
+
+
 ?>
