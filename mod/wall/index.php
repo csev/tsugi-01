@@ -6,7 +6,6 @@ if ( ! $context->valid ) {
 }
 
 if ( $_POST['response'] ) {
-    date_default_timezone_set('EST');
     $responseData = $_POST['response'];
     postToWall($db,$responseData);
 }

@@ -17,7 +17,7 @@ makeTable($db, 'User_Files', Array(
     'mime:text:maxlength=50',
     'size:integer',
     'data:mediumblob',
-    'created:datetime',
+    'datetime:text:maxlength=50',
 	)
 );
 
