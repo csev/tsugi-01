@@ -13,10 +13,8 @@ if(!empty($_POST['task_id']) )
     $ids=$_POST['task_id'];
     foreach($ids as $id)
     {
-        $sql = "DELETE FROM Tasks WHERE id=?";
-        $q = $db->prepare($sql);
-        $success = $q->execute(Array($id));
-        if ( ! $success ) {
+        $q = pdoRun($db, "DELETE FROM Tasks WHERE id=?", $id);
+        if ( ! $q->success ) {
             $arr = $q->errorInfo();
             $_SESSION['err'] = 'Unable to delete task '.$arr[2];
         }
@@ -27,11 +25,7 @@ if(!empty($_POST['task_id']) )
 flashMessages();
 echo "<form method='post'>";
 echo '<table border="1">' . "\n";
-$uid=$_SESSION['user_id'];
-
-$sql = "SELECT id,title FROM Tasks WHERE user_id=?";
-$q = $db->prepare($sql);
-$success = $q->execute(Array($uid));
+$q = pdoRun($db, "SELECT id,title FROM Tasks WHERE user_id=?", $_SESSION['user_id']);
 while($row=$q->fetch())
 {
     $id=$row[0];

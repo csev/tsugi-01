@@ -112,13 +112,19 @@ foreach ( $modules as $module ) {
     }
 }
 
-function pdoRun($db, $sql, $arr) {
+// $arr can be empty(FALSE), a single item, or an array
+function pdoRun($db, $sql, $arr=FALSE) {
     $q = FALSE;
     $success = FALSE;
     $message = '';
+    if ( $arr !== FALSE && ! is_array($arr) ) $arr = Array($arr);
     try {
         $q = $db->prepare($sql);
-        $success = $q->execute($arr);
+        if ( $arr === FALSE ) {
+            $success = $q->execute();
+        } else { 
+            $success = $q->execute($arr);
+        }
     } catch(Exception $e) {
         $success = FALSE;
         $message = $e->getMessage();
