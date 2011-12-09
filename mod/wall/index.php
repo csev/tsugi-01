@@ -9,20 +9,9 @@ if ( $_POST['response'] ) {
     date_default_timezone_set('EST');
     $responseData = $_POST['response'];
     postToWall($db,$responseData);
-
-    //$sql = "INSERT INTO Announcements (user_id, data, datetime) VALUES (?, ?, ?)";
-    //$q = $db->prepare($sql);
-    //$success = $q->execute(Array($_SESSION['user_id'],$_POST['response'],date('M d, Y g:i a') ));
-    //-- echo($sql);flush();
-    //if ( $success) $rows = $q->rowCount();
-    //if ( $rows > 0 ) {
-    //    $_SESSION['success'] = 'Data inserted';
-    //} else { 
-    //    $_SESSION['err'] = 'Unable to insert data ';
-    //}
 }
 
-if ( $_POST['MAX_FILE_SIZE'] ) {
+if ( $_FILES ) {
     $target_path = $CFG->wwwroot;
     $target_path = $target_path . "/" . basename( $_FILES['uploadedFile']['name']);
     echo "Upload: " . $_FILES["uploadedFile"]["name"] . "<br />";
@@ -32,12 +21,10 @@ if ( $_POST['MAX_FILE_SIZE'] ) {
     echo $target_path . "<br />";
 
     if (move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $target_path) ) {
-        //$_SESSION['success'] = 'Data inserted';
-        echo "The file ".  basename( $_FILES['uploadedFile']['name']). 
+        $_SESSION['success'] = "The file ".  basename( $_FILES['uploadedFile']['name']). 
         " has been uploaded";
     } else{
-        //$_SESSION['err'] = 'Unable to insert data '.$CFG->wwwroot;
-        echo "Unable to insert data -- Error " .$_FILES['uploadedFile']['error'];
+        $_SESSION['err'] = "Unable to insert data -- Error Code " .$_FILES['uploadedFile']['error'];
     }
 }
 
@@ -62,7 +49,7 @@ flashMessages();
 Choose a file to upload: <input name="uploadedFile" type="file" id="uploadedFile"/><br />
 <input type="submit" value="Upload File" />
 </form>
-<p><table>
+<p><table border=1>
 <tr><th width=600>Recent Announcements</th></tr>
 
 <?php
