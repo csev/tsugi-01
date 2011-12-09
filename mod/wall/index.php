@@ -12,20 +12,7 @@ if ( $_POST['response'] ) {
 }
 
 if ( $_FILES ) {
-    $target_path = $CFG->wwwroot;
-    $target_path = $target_path . "/" . basename( $_FILES['uploadedFile']['name']);
-    echo "Upload: " . $_FILES["uploadedFile"]["name"] . "<br />";
-    echo "Type: " . $_FILES["uploadedFile"]["type"] . "<br />";
-    echo "Size: " . ($_FILES["uploadedFile"]["size"] / 1024) . " Kb<br />";
-    echo "Stored in: " . $_FILES["uploadedFile"]["tmp_name"] . "<br />";
-    echo $target_path . "<br />";
-
-    if (move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $target_path) ) {
-        $_SESSION['success'] = "The file ".  basename( $_FILES['uploadedFile']['name']). 
-        " has been uploaded";
-    } else{
-        $_SESSION['err'] = "Unable to insert data -- Error Code " .$_FILES['uploadedFile']['error'];
-    }
+    addFileToPost($db, $_FILES);
 }
 
 $sql = "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;";

@@ -11,4 +11,16 @@ makeTable($db, 'Announcements', Array(
 	)
 );
 
+makeTable($db, 'User_Files', Array(
+    'id:key',
+    'name:text:maxlength=255',
+    'mime:text:maxlength=50',
+    'size:integer',
+    'data:mediumblob',
+    'created:datetime',
+	)
+);
+
+
+
 ?>
