@@ -53,20 +53,14 @@ function getPostFileList($db) {
         echo ('<table class="post-file-list"><tr>');
         echo('<td width="570"><table width="570"><tr>');
         echo("<td>".$row['name']." ".$row['datetime']."</td></tr>");
-        //echo("<tr><td>".htmlentities($row['data'])."</td></tr>");
         echo('<tr><td><a href="index.php?deleteFile='.$row[0].'">Delete</a></td></tr></table>');
         echo("</td></tr></table>");
         echo("</td></tr>\n");
     }
-
 }
 
 
-function getPostFile() {
-
-}
-
-function deletePostFile($db, $_GET) {
-    echo($_GET['deleteFile']);
+function deletePostFile($db, $PostFileID) {
+    $q = pdoRun($db, "DELETE FROM User_Files WHERE id=?",$PostFileID);
 }
 

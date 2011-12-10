@@ -15,7 +15,8 @@ if ( $_FILES ) {
 }
 
 if ( $_GET['deleteFile'] ) {
-    deletePostFile($db, $_GET);
+    $PostFileID = $_GET['deleteFile'];
+    deletePostFile($db, $PostFileID);
 }
 
 $sql = "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;";
