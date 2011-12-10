@@ -15,6 +15,7 @@ function postToWall($db,$responseData) {
     }    
 }
 
+
 function addFileToPost($db, $_FILES) {
     date_default_timezone_set('EST');
     $fileSize = intval($_FILES["uploadedFile"]["size"] / 1024);
@@ -37,9 +38,35 @@ function addFileToPost($db, $_FILES) {
     }    
 }
 
-function getPostFileList() {
+
+function getPostFileList($db) {
+    $sql = "SELECT * FROM User_Files ORDER BY User_Files.id DESC;";
+    $q = $db->prepare($sql);
+    $q->execute();
+    $first = true;
+
+    while ( $q && $row = $q->fetch() ) {
+        if ( $first ) {
+            $first = false;
+        }
+        echo ("<tr><td>");
+        echo ('<table class="post-file-list"><tr>');
+        echo('<td width="570"><table width="570"><tr>');
+        echo("<td>".$row['name']." ".$row['datetime']."</td></tr>");
+        //echo("<tr><td>".htmlentities($row['data'])."</td></tr>");
+        echo('<tr><td><a href="index.php?deleteFile='.$row[0].'">Delete</a></td></tr></table>');
+        echo("</td></tr></table>");
+        echo("</td></tr>\n");
+    }
+
 }
 
-function deletePostFile() {
+
+function getPostFile() {
+
+}
+
+function deletePostFile($db, $_GET) {
+    echo($_GET['deleteFile']);
 }
 

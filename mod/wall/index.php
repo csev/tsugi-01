@@ -14,6 +14,10 @@ if ( $_FILES ) {
     addFileToPost($db, $_FILES);
 }
 
+if ( $_GET['deleteFile'] ) {
+    deletePostFile($db, $_GET);
+}
+
 $sql = "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;";
 $q = $db->prepare($sql);
 $q->execute();
@@ -22,6 +26,7 @@ $first = true;
 
 flashMessages();
 
+getPostFileList($db);
 ?>
 
 <center>
