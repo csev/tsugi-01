@@ -25,5 +25,6 @@ if ( isset($_POST['title']) )
 <form method="post">
 <p>Assignment Title: <input type="text" name="title"/></p>
 <p>Due Date: <input type="text" name="duedate"/></p>
+<p>Please enter date as: "mm/dd/yyyy"</p>
 <p><input type="submit" value="Add to Assignment List" /></p>
 </form>

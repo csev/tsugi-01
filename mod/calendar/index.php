@@ -1,124 +1,80 @@
 <?php
-//r
 require_once("../../config.php");
+require_once("datesArray.php");
 
-#Input: number of days to display
-#Output: array of size(input) of date strings
-function make_date($dates_request){
+$array_in = make_date(7);
+$dates_size = count($array_in);
 
-	$date_array = array();
-	$cur_month = date('n');		
-	$cur_day = date('j');
-	$cur_year = date('Y');
-	$leap_true  = date('L');
-	$num_days = 0;
-	
-	//Loop that determines next $num_days upcoming dates
-	while ($num_days < $dates_request) {	
+########
 
-		$format_date = $cur_month."/".$cur_day."/".$cur_year;			
-		$date_array[] = $format_date;		
-
-		//months with 30 days
-		if ($cur_month == 9 || $cur_month == 4 || $cur_month == 6) {
-			if ($cur_day == 30) {
-				$cur_day = 1;
-				$cur_month = $cur_month+1;
-			}
-			else {
-				$cur_day = $cur_day+1;
-			}
-		}
-		//december
-		else if ($cur_month == 12) {
-			if ($cur_day == 31) {
-				$cur_day = 1;
-				$cur_month = 1;
-				$cur_year = $cur_year+1;
-			}
-			else {
-				$cur_day = $cur_day+1;
-			}
-		}
-		//february		
-		else if ($cur_month == 2) {
-			if ($leap_true == true) {
-				if ($cur_day == 29) {
-					$cur_day=1;
-					$cur_month=$cur_month+1;
-				}
-				else {
-					$cur_day = $cur_day+1;
-				}
-			}
-			else {
-				if ($cur_day == 28) {
-					$cur_day = 1;
-					$cur_month=$cur_month+1;
-				}
-				else {
-					$cur_day = $cur_day+1;
-				}
-			}
-		}
-		//other months		
-		else {
-			if ($cur_day == 31) {
-				$cur_day = 1;
-				$cur_month=$cur_month+1;
-			}
-			else {
-				$cur_day = $cur_day+1;
-			}
-		}
-	$num_days = $num_days+1;
-	}
-	return $date_array;
+// Get our session setup
+$context = moduleContext();
+if ( ! $context->valid ) {
+   die("Session failure ".$_SERVER['PHP_SELF']);
 }
 
+// Do any Model Processing (i.e. handling post data here )
+if(!empty($_POST['task_id']) )
+{
+    $ids=$_POST['task_id'];
+    foreach($ids as $id)
+    {
+        $q = pdoRun($db, "DELETE FROM Assignments WHERE id=?", $id);
+        if ( ! $q->success ) {
+            $arr = $q->errorInfo();
+            $_SESSION['err'] = 'Unable to delete task '.$arr[2];
+        }
+    }
+    $context->redirect('index.php');
+    return;
+}
+flashMessages();
+echo '<table border="1">' . "\n";
+$q = pdoRun($db, "SELECT id,title,duedate FROM Assignments WHERE user_id=?", $_SESSION['user_id']);
 
-#Inputs: array of date strings
-#Outputs: table of dates, with information below
-//TODO:
-//Grab contents from SQL to place in table form
-//May need to add filters
-function date_extract($array_in) {
+echo "<table border='1'>";
+echo "\n<tr>";
 
-	$dates_size = count($array_in);
-
-	echo "<table border='1'>";
-
-	//Date headers
-	echo "\n<tr>";
-
-	$k = 0;		
-	while ($k<$dates_size) {
+$k = 0;		
+while ($k<$dates_size) {
 	echo "\n<th>$array_in[$k]</th>";
 	$k = $k+1;
-	}
+}
 	
-	echo "\n</tr>";
+echo "\n</tr>";
 
-	//Date information
-	//NEED TO USE SQL CONTENTS -- 'WHILE' CONSTRAINT IS INCORRECT
-	echo "\n<tr>";
-	
-	$k = 0;
-	while ($k<$dates_size) {
-	echo "\n<td>Example Post $k</td>";
+//Date information
+echo "\n<tr>";
+
+$due_arr = array();
+$title_arr = array();
+
+while($row=$q->fetch()) {
+	$due_arr[] = $row[2];
+	$title_arr[] = $row[1];
+}
+
+$db_arr_size = count($title_arr);
+$k = 0;
+while ($k<$dates_size) {
+	$dates_entered = False;
+	$j = 0;
+	echo "\n<td>";
+	while($j<$db_arr_size) {	
+		if ($due_arr[$j]==$array_in[$k]) {
+			echo "$title_arr[$j]<br>";
+			$dates_entered = True;
+		}
+		$j = $j+1;
+	}
+	if ($dates_entered == False) {
+		echo "Empty";
+	}
+	echo "</td>";
 	$k = $k+1;
-	}
-	
-	echo "\n</tr>";
-	echo "\n</table>";
 }
-
-function main() {
-	$next_week = make_date(7);
-	date_extract($next_week);
-	return 0;
-}
-
-main();
+		
+echo "\n</tr>";
+echo "\n</table>";	
 
 ?>
