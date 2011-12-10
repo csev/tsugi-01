@@ -1,4 +1,7 @@
 <?php
+
+require_once("../../config.php");
+
 #Input: number of days to display
 #Output: array of size(input) of date strings
 function make_date($dates_request){
