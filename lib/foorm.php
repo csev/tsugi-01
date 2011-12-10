@@ -86,7 +86,7 @@ class FOORM {
                 $schema = "TINYINT DEFAULT '0'";
             }
 
-        // To allow for types used in User_Files table (not 'oracle' compatible)
+        // To allow for types used in User_Files table (not yet 'oracle' compatible)
         } else if ("datetime" == $type) {
             $schema = "DATETIME";
         } else if ("mediumblob" == $type) {

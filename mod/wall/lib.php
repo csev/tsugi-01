@@ -36,3 +36,10 @@ function addFileToPost($db, $_FILES) {
         $_SESSION['err'] = "Unable to insert data -- Error Code " .$_FILES['uploadedFile']['error'];
     }    
 }
+
+function getPostFileList() {
+}
+
+function deletePostFile() {
+}
+
