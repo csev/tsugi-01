@@ -30,6 +30,7 @@ flashMessages();
 getPostFileList($db);
 ?>
 
+<body style="font-family: century gothic;">
 <center>
 <form  method="post">
 <textarea name="response" rows="10" cols="84">
@@ -51,13 +52,13 @@ while ( $q && $row = $q->fetch() ) {
         $first = false;
     }
     echo ("<tr><td>");
-    echo ('<table style="border-style:outset; border-width:2px; border-color:white;"><tr><td width="30">');
+    echo ('<table style="border-style:outset; border-width:2px; border-color:white; padding:5px;"><tr><td width="30">');
     if ( strlen($row['image']) > 0 ) {
         echo('<img src="'.$row['image'].'" width="30" height="30" style="float:left">');
     }
 
     echo('</td><td width="570"><table width="570"><tr>');
-    echo("<td>".$row['name']." ".$row['datetime']."</td></tr>");
+    echo("<td><b>".$row['name']."</b> <i> ".$row['datetime']."</i></td></tr>");
     echo("<tr><td>".htmlentities($row['data'])."</td></tr>");
     echo('<tr><td><a href="wall.php?reply?='.$row[0].'">Reply</a></td></tr></table>');
     echo("</td></tr></table>");
@@ -67,7 +68,7 @@ while ( $q && $row = $q->fetch() ) {
 if ( $first ) {
     echo("<tr><td>No announcements found.</td></tr></table></center>\n");
 } else {
-    echo("</table></center>\n");
+    echo("</table></center></body>\n");
 }
 ?>
 </div>
