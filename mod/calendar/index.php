@@ -1,5 +1,5 @@
 <?php
-
+//r
 require_once("../../config.php");
 
 #Input: number of days to display
