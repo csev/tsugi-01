@@ -24,7 +24,7 @@ if(!empty($_POST['task_id']) )
 }
 flashMessages();
 echo "<form method='post'>";
-echo '<table border="1">' . "\n";
+echo '<table border="0" style="border-style:outset; border-width:2px; border-color:white;" >' . "\n";
 $q = pdoRun($db, "SELECT id,title FROM Tasks WHERE user_id=?", $_SESSION['user_id']);
 while($row=$q->fetch())
 {
@@ -36,6 +36,7 @@ while($row=$q->fetch())
 echo "</tr>\n";
 ?>
 </table>
+<br/>
 <input type='submit' value='Delete finished tasks' name='delete' id='delete'/></form>
 <a href=add.php>Add New Task</a>
 
