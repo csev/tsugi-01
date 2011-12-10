@@ -41,7 +41,7 @@ getPostFileList($db);
 Choose a file to upload: <input name="uploadedFile" type="file" id="uploadedFile"/><br />
 <input type="submit" value="Upload File" />
 </form>
-<p><table border=1>
+<p><table border=0>
 <tr><th width=600>Recent Announcements</th></tr>
 
 <?php
@@ -51,7 +51,7 @@ while ( $q && $row = $q->fetch() ) {
         $first = false;
     }
     echo ("<tr><td>");
-    echo ('<table class="announcement-feed-post"><tr><td width="30">');
+    echo ('<table style="border-style:outset; border-width:2px; border-color:white;"><tr><td width="30">');
     if ( strlen($row['image']) > 0 ) {
         echo('<img src="'.$row['image'].'" width="30" height="30" style="float:left">');
     }
