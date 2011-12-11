@@ -106,7 +106,8 @@ function footerContent() {
     if ( $CFG->development === TRUE ) {
         if ( strlen($debug) > 0 ) { ?>
 <br/>
-<a href="#" onclick="$('#debugpre').toggle();return false;" style="position: fixed; right:0; bottom:0;">Debug Log</a>
+<a href="#" onclick="$('#debugpre').toggle();return false;" 
+        style="position: fixed; right:0; top:40; color:grey; text-decoration: none; font-size: small;">Debug Log</a>
 <pre id="debugpre" style="display: none;">
 <?php echo($debug); ?>
 </pre>

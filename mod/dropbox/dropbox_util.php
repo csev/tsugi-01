@@ -2,7 +2,7 @@
 
 function getFolderName($context)
 {
-    $foldername = $context->getResourceLKey();
+    $foldername = $context->getResourceKey();
     $foldername = md5($foldername);
     $root = sys_get_temp_dir();
     if ( isset($CFG->dataroot) ) $root = $CFG->dataroot;
@@ -14,7 +14,7 @@ function getFolderName($context)
 
 function getStudentFolder($context)
 {
-    $foldername = $context->getResourceLKey();
+    $foldername = $context->getResourceKey();
     $userkey = $context->getUserKey();
     $foldername = md5($foldername);
     $userkey = md5($userkey);
