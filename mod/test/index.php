@@ -29,6 +29,7 @@ flashMessages();
 debugLog("Context Information:");
 debugLog($context->dump());
 debugLog("\nSESSION",$_SESSION);
+debugLog("\SERVER",$_SERVER);
 
 footerContent();
 

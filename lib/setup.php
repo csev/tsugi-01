@@ -1,5 +1,15 @@
 <?php
-if ( ! defined('COOKIE_SESSION') ) {
+
+// We do not use cookies to maintain session when we are called 
+// directly as a /mod/ - if we are called as /tool/ we use cookies
+
+$serverpath = $_SERVER['REQUEST_URI'];
+$pos = strpos($serverpath,'?');
+if ( $pos > 0 ) $serverpath = substr($serverpath,0,$pos);
+global $RUNNING_IN_FRAME;
+$RUNNING_IN_FRAME = (strpos($serverpath, '/mod/') !== false);
+
+if ( $RUNING_IN_FRAME && ! defined('COOKIE_SESSION') ) {
     ini_set('session.use_cookies', '0');
     ini_set('session.use_only_cookies',0);
     ini_set('session.use_trans_sid',1); 
