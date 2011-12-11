@@ -5,6 +5,8 @@ if ( ! $context->valid ) {
    die("Basic LTI Session failure ".$_SERVER['PHP_SELF']);
 }
 
+require_once("lib.php");
+
 if ( $_POST['response'] ) {
     $responseData = $_POST['response'];
     postToWall($db,$responseData);
