@@ -44,7 +44,7 @@ getPostFileList($db);
 Choose a file to upload: <input name="uploadedFile" type="file" id="uploadedFile"/><br />
 <input type="submit" value="Upload File" />
 </form>
-<p><table border=0>
+<p><table>
 <tr><th width=600>Recent Announcements</th></tr>
 
 <?php
