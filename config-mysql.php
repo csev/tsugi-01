@@ -11,6 +11,7 @@ $CFG = new stdClass();
 $CFG->wwwroot = 'http://localhost/tsugi';
 
 $CFG->dirroot = realpath(dirname(__FILE__));
+// $CFG->dataroot  = '/tmp/tsugi'; // If unset use temporary space
 
 $CFG->pdo    = 'sqlite:'.$CFG->dirroot.'/db/response.sqlite';
 $CFG->pdo    = 'mysql:host=localhost;dbname=lms';

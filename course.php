@@ -31,6 +31,7 @@ if ( ! $course ) {
 if ( strlen($course['name']) > 0 ) $title = $course['name'];
 userMenu($title);
 flashMessages();
+debugClear();
 ?>
 <iframe name="basicltiLaunchFrame"  id="basicltiLaunchFrame" 
   src="launch.php?id=<?php echo($_GET['id']); ?>&mod=<?php echo($_GET['mod']); ?>"

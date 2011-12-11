@@ -2,18 +2,22 @@
 
 function getFolderName($context)
 {
-    $foldername = $context->getResourceKey();
-    // $foldername = md5($foldername);
-    $foldername = dirname(__FILE__).'/upload/' . $foldername;
+    $foldername = $context->getResourceLKey();
+    $foldername = md5($foldername);
+    $root = sys_get_temp_dir();
+    if ( isset($CFG->dataroot) ) $root = $CFG->dataroot;
+    $root = $root . '/dropbox';
+    if ( !file_exists($root) ) mkdir($root);
+    $foldername = $root.'/' . $foldername;
     return $foldername;
 }
 
 function getStudentFolder($context)
 {
-    $foldername = $context->getResourceKey();
+    $foldername = $context->getResourceLKey();
     $userkey = $context->getUserKey();
-    // $foldername = md5($foldername);
-    // $userkey = md5($userkey);
+    $foldername = md5($foldername);
+    $userkey = md5($userkey);
     $foldername = dirname(__FILE__).'/upload/' . $foldername . '-students/' . $userkey . '/';
     return $foldername;
 }

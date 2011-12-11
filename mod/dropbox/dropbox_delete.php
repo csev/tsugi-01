@@ -1,28 +1,11 @@
 <?php
+require_once("../../config.php");
 
-require_once 'ims-blti/blti.php';
-require_once 'dropbox_util.php';
-
-// Get out session setup without a cookie
-$context = establishContext();
-
+// Get our session setup
+$context = moduleContext();
 if ( ! $context->valid ) {
-   die("Basic LTI Session failure");
+   die("Session failure ".$_SERVER['PHP_SELF']);
 }
-
-?>
-<html>
-<head><title>
-<?php echo $context->getCourseName; echo " "; echo $context->getResourceTitle(); ?>
-</title> 
-<?php
-foreach ( $context->getCSS() as $css ) {
-    echo '<link rel="stylesheet" type="text/css" href="'.$css.'" />'."\n";
-}
-?>
-</head> 
-<body>
-<?php
 
 if ( ! $context->isInstructor() ) {
     die("Only instructors can delete files");
@@ -33,15 +16,23 @@ if ( strlen($fn) < 1 ) {
     die("File name not found");
 }
 
+require_once "dropbox_util.php";
 if ( isset($_POST["doDelete"]) ) {
-   $foldername = getFolderName($context);
-   $filename = $foldername . '/' . fixFileName($_POST['file']);
-   if ( unlink($filename) ) { 
-        echo("<h4>File Deleted...</h4>\n");
-   }
-?> <p><input type="submit" name="doDone" onclick="location='dropbox.php'; return false;" value="Continue"></p>  <?php
+    $foldername = getFolderName($context);
+    $filename = $foldername . '/' . fixFileName($_POST['file']);
+    if ( unlink($filename) ) { 
+        $_SESSION['success'] = 'File deleted';
+        $context->redirect('index.php');
+    } else {
+        $_SESSION['err'] = 'File delete failed';
+        $context->redirect('index.php');
+    }
     return;
 }
+
+// Switch to view / controller
+headerContent();
+flashMessages();
 
 echo '<h4 style="color:red">Are you sure you want to delete: ' .$fn. "</h4>\n"; 
 ?>
@@ -55,5 +46,6 @@ echo '<h4 style="color:red">Are you sure you want to delete: ' .$fn. "</h4>\n";
 <input type=submit name=doDelete value="Delete"></p>
 </form>
 <?php
+debugLog('Folder: '.$foldername);
 
-?>
+footerContent();

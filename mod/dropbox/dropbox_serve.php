@@ -1,12 +1,10 @@
 <?php
-require_once 'ims-blti/blti.php';
-require_once 'dropbox_util.php';
+require_once("../../config.php");
 
-// Get out session setup without a cookie
-$context = establishContext();
-
+// Get our session setup
+$context = moduleContext();
 if ( ! $context->valid ) {
-    die("Basic LTI Session Failure");
+   die("Session failure ".$_SERVER['PHP_SELF']);
 }
 
 $fn = $_REQUEST['file'];
@@ -14,6 +12,7 @@ if ( strlen($fn) < 1 ) {
     die("File name not found");
 }
 
+require_once "dropbox_util.php";
 $fn = fixFileName($fn);
 $foldername = getFolderName($context);
 $filename = $foldername . '/' . fixFileName($fn);

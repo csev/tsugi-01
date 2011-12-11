@@ -9,6 +9,12 @@ if ( ! defined('COOKIE_SESSION') ) {
 // a session so it survives a redirect
 global $DEBUG_STRING;
 $DEBUG_STRING='';
+
+function debugClear() {
+    global $DEBUG_STRING;
+    unset($_SESSION['__zzz_debug']);
+}
+
 function debugLog($text,$mixed=false) {
     global $DEBUG_STRING;
     $sess = (strlen(session_id()) > 0 );
