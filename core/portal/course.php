@@ -39,6 +39,7 @@ flashMessages();
 <p>frames_required</p>
 </iframe>
 -->
+<hr clear="all"/>
 <?php
 require_once($CFG->dirroot.'/mod/'.$_GET['mod'].'/index.php');
 ?>

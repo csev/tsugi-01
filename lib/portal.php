@@ -69,7 +69,7 @@ function adminMenu() {
     echo('<li><a href="'.$CFG->wwwroot.'/users/index.php">Users</a><li>');
     echo('<li><a href="'.$CFG->wwwroot.'/courses/index.php">Courses</a></li>');
     echo('<li><a href="'.$CFG->wwwroot.'/courses.php">Non-Admin</a></li>');
-    echo("</ul></div>\n");
+    echo('</ul></div><br clear="all">'."\n");
 }
 
 function userMenu($title=false) {
@@ -97,8 +97,7 @@ function userMenu($title=false) {
     } else {
         echo("<li>Please Log In</li>");
     }
-    echo("</ul>\n");
-    echo("</div>\n");
+    echo('</ul></div><br clear="all">'."\n");
 }
 
 function footerContent() {

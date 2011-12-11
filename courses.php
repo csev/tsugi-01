@@ -4,6 +4,7 @@ require_once "db.php";
 session_start();
 requireLogin();
 
+headerContent();
 userMenu();
 flashMessages();
 
@@ -47,4 +48,5 @@ if ( $first ) {
 ?>
 </div>
 </div>
-</body>
+<?php
+footerContent();
