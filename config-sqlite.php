@@ -4,6 +4,9 @@ unset($CFG);
 global $CFG;
 $CFG = new stdClass();
 
+// Are running in development mode
+$CFG->development = TRUE;
+
 // No trailing slash
 $CFG->wwwroot = 'http://localhost/tsugi';
 
@@ -17,6 +20,9 @@ $CFG->pdopass    = 'lmspassword';
 $CFG->localkey    = 'local';   // oauth_consumer_key for local launches
 $CFG->localkeyid   = -1;   // For locally created accounts (don't change)
 $CFG->defaultkeyid = -2;   // For dev launches when there are no LTI_Keys defined (don't change)
+
+error_reporting(E_ALL & ~E_NOTICE);
+ini_set('display_errors', 1);
 
 require_once(dirname(__FILE__) . '/lib/setup.php');
 require_once(dirname(__FILE__) . '/lib/portal.php');

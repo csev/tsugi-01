@@ -1,9 +1,5 @@
 <?php
 
-// Set to "secret" to make all secrets secret
-global $SALT;
-$SALT = "secret";
-
 function getFolderName($context)
 {
     $foldername = $context->getResourceKey();
@@ -43,14 +39,6 @@ function establishContext() {
     // We want this to come form the session, not from the secret - this is not launchable
     $context = new BLTI(rand()+"xyzzy", true, false);
     return $context;
-}
-
-function getSecret($oauth_consumer_key=false)
-{ 
-    if ( $oauth_consumer_key === false ) $oauth_consumer_key = $_REQUEST['oauth_consumer_key'];
-    global $SALT;
-    if ( $SALT == "secret" ) return "secret";
-    return md5($SALT.$oauth_consumer_key);
 }
 
 ?>
