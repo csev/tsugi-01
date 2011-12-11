@@ -7,7 +7,7 @@ if( !empty($_POST['id']) && !empty($_POST['grade']) )
 {
     $id=$_POST['id'];
     $g=$_POST['grade'];
-    mysql_query("INSERT INTO gradebook(item_id,grade) VALUES('$id','$g')");
+    mysql_query("INSERT INTO gradebook (item_id,grade) VALUES('$id','$g')");
     $_SESSION['success'] = 'Graded Successfully';
     header( 'Location: gradebook2.php' );
     return;
