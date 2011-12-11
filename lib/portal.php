@@ -41,8 +41,7 @@ function requireAdmin() {
 }
 
 function headerContent($head=false) {
-    global $HEAD_CONTENT_SENT;
-    global $CFG;
+    global $HEAD_CONTENT_SENT, $CFG, $RUNNING_IN_TOOL;
     if ( $HEAD_CONTENT_SENT === true ) return;
     header('Content-Type: text/html; charset=utf-8');
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -57,6 +56,10 @@ function headerContent($head=false) {
 <body>
 <?php
     $HEAD_CONTENT_SENT = true;
+    if ( $RUNNING_IN_TOOL ) {
+        userMenu('Test');
+        echo("\n<hr>\n");
+    }
 }
 
 function adminMenu() {
@@ -73,7 +76,7 @@ function adminMenu() {
 }
 
 function userMenu($title=false) {
-    global $CFG;
+    global $CFG, $RUNNING_IN_TOOL;
     headerContent();
     $modules = getModules();
     echo('<div id="header">');
@@ -81,12 +84,18 @@ function userMenu($title=false) {
     echo('<h1><a href="http://www.imsglobal.org/" target="_new">'.$title.'</a></h1>');
     echo('<ul>');
     if ( strlen($_SESSION['user_name']) > 0 ) {
-        if ( isset($_GET['id']) ) {
+        $id = $_GET['id'];
+        if ( !isset($id) ) $id = $_SESSION['_context_course_id'];
+        if ( isset($id) ) {
             foreach ( $modules as $module ) {
                 if ( is_file($CFG->dirroot.'/mod/'.$module.'/index.php') ) {
-                    echo('<li><a href="course.php?id='.$_GET['id'].'&mod='.$module.'">'.ucwords($module).'</a></li>');
+                    if ( $RUNNING_IN_TOOL ) {
+                        echo('<li><a href="'.$CFG->wwwroot.'/tool/'.$module.'/index.php">'.ucwords($module).'</a></li>');
+                    } else {
+                        echo('<li><a href="'.$CFG->wwwroot.'/course.php?id='.$id.'&mod='.$module.'">'.ucwords($module).'</a></li>');
+                    }
                 } else {
-                    echo('<li>'.ucwords($module).'</li>');
+                    // echo('<li>'.ucwords($module).'</li>');
                 }
             }
         }
@@ -107,7 +116,7 @@ function footerContent() {
         if ( strlen($debug) > 0 ) { ?>
 <br/>
 <a href="#" onclick="$('#debugpre').toggle();return false;" 
-        style="position: fixed; right:0; top:40; color:grey; text-decoration: none; font-size: small;">Debug Log</a>
+        style="position: absolute; right:0; bottom:40; color:grey; text-decoration: none; font-size: small;">Debug Log</a>
 <pre id="debugpre" style="display: none;">
 <?php echo($debug); ?>
 </pre>

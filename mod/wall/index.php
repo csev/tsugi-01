@@ -21,14 +21,13 @@ if ( $_GET['deleteFile'] ) {
     deletePostFile($db, $PostFileID);
 }
 
-$sql = "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id ORDER BY Announcements.id DESC;";
-$q = $db->prepare($sql);
-$q->execute();
+$q = pdoRun($db, "SELECT * FROM Announcements JOIN LTI_Users ON Announcements.user_id=LTI_Users.id 
+        ORDER BY Announcements.id DESC;");
 
 $first = true;
 
-flashMessages();
 headerContent();
+flashMessages();
 
 getPostFileList($db);
 ?>
@@ -63,7 +62,7 @@ while ( $q && $row = $q->fetch() ) {
     echo('</td><td width="570"><table width="570"><tr>');
     echo("<td><b>".$row['name']."</b> <i> ".$row['datetime']."</i></td></tr>");
     echo("<tr><td>".htmlentities($row['data'])."</td></tr>");
-    echo('<tr><td><a href="wall.php?reply?='.$row[0].'">Reply</a></td></tr></table>');
+    echo('<tr><td><a href="index.php?reply?='.$row[0].'">Reply</a></td></tr></table>');
     echo("</td></tr></table>");
     echo("</td></tr>\n");
 }
@@ -71,7 +70,7 @@ while ( $q && $row = $q->fetch() ) {
 if ( $first ) {
     echo("<tr><td>No announcements found.</td></tr></table></center>\n");
 } else {
-    echo("</table></center></body>\n");
+    echo("</table></center>\n");
 }
 ?>
 </div>

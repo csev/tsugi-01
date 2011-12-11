@@ -20,6 +20,8 @@ if ( isset($_POST['title']) )
     $context->redirect('index.php');
     return;
 }
+
+headerContent();
 ?>
 
 <form method="post">

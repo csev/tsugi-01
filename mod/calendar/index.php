@@ -5,8 +5,6 @@ require_once("datesArray.php");
 $array_in = make_date(7);
 $dates_size = count($array_in);
 
-########
-
 // Get our session setup
 $context = moduleContext();
 if ( ! $context->valid ) {
@@ -28,11 +26,14 @@ if(!empty($_POST['task_id']) )
     $context->redirect('index.php');
     return;
 }
+
+headerContent();
 flashMessages();
-echo '<table border="1">' . "\n";
+
+echo '<table>' . "\n";
 $q = pdoRun($db, "SELECT id,title,duedate FROM Assignments WHERE user_id=?", $_SESSION['user_id']);
 
-echo "<table border='1'>";
+echo "<table>";
 echo "\n<tr>";
 
 $k = 0;		
@@ -75,6 +76,6 @@ while ($k<$dates_size) {
 }
 		
 echo "\n</tr>";
-echo "\n</table>";	
-
-?>
+echo "\n</table>";
+	
+footerContent();

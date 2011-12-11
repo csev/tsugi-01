@@ -1,7 +1,7 @@
 <?php
 require_once("../../config.php");
 
-// Get our context setup
+// Get our session setup
 $context = moduleContext();
 if ( ! $context->valid ) {
    die("Session failure ".$_SERVER['PHP_SELF']);
@@ -20,11 +20,15 @@ if ( isset($_POST['title']) )
     $context->redirect('index.php');
     return;
 }
-?>
 
+headerContent();
+flashMessages();
+?>
 <form method="post">
 <p>Assignment Title: <input type="text" name="title"/></p>
 <p>Due Date: <input type="text" name="duedate"/></p>
 <p>Please enter date as: "mm/dd/yyyy"</p>
 <p><input type="submit" value="Add to Assignment List" /></p>
 </form>
+<?php
+footerContent();

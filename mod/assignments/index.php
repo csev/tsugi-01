@@ -22,22 +22,35 @@ if(!empty($_POST['task_id']) )
     $context->redirect('index.php');
     return;
 }
+
+headerContent();
 flashMessages();
 echo "<form method='post'>";
-echo '<table border="1">' . "\n";
 $q = pdoRun($db, "SELECT id,title,duedate FROM Assignments WHERE user_id=?", $_SESSION['user_id']);
-echo "<td><th>Assignment</th><th>Due Date</th></td>";
+$first = true;
 while($row=$q->fetch())
 {
+    if ( $first ) {
+        echo '<table>' . "\n";
+        echo "<tr><th>Delete</hth><th>Assignment</th><th>Due Date</th></tr>";
+        $first = false;
+    }
+
     $id=$row[0];
     echo "<tr>";
     echo "<td><input type='checkbox' value='$id' name='task_id[]'/></td>";
     echo "<td>$row[1]</td>";
 	echo "<td>$row[2]</td>";
+    echo "</tr>\n";
 }
-echo "</tr>\n";
-?>
-</table>
-<input type='submit' value='Delete finished assignments' name='delete' id='delete'/></form>
-<a href=add.php>Add New Assignment</a>
+
+if ( $first ) {
+    echo("<p>No Assignments Found</p>\n");
+} else {
+    echo("</table>\n");
+    echo('<input type="submit" value="Delete finished assignments" name="delete" id="delete"/></form>');
+}
+
+echo('<a href="add.php">Add New Assignment</a>');
+footerContent();
 

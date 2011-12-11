@@ -6,8 +6,9 @@
 $serverpath = $_SERVER['REQUEST_URI'];
 $pos = strpos($serverpath,'?');
 if ( $pos > 0 ) $serverpath = substr($serverpath,0,$pos);
-global $RUNNING_IN_FRAME;
+global $RUNNING_IN_FRAME, $RUNNING_IN_TOOL;
 $RUNNING_IN_FRAME = (strpos($serverpath, '/mod/') !== false);
+$RUNNING_IN_TOOL = (strpos($serverpath, '/tool/') !== false);
 
 if ( $RUNING_IN_FRAME && ! defined('COOKIE_SESSION') ) {
     ini_set('session.use_cookies', '0');
