@@ -26,3 +26,5 @@ if ( isset($_POST['title']) )
 <p>Task Title: <input type="text" name="title"/></p>
 <p><input type="submit" value="Add to TO-DO List" /></p>
 </form>
+<?php
+footerContent();

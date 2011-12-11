@@ -1,41 +1,16 @@
 <?php 
-// Load up the Basic LTI Support code
-require_once 'ims-blti/blti.php';
-require_once 'dropbox_util.php';
+require_once("../../config.php");
 
-error_reporting(E_ALL & ~E_NOTICE);
-ini_set("display_errors", 1);
-header('Content-Type: text/html; charset=utf-8'); 
-
-session_start();
-session_regenerate_id();
-// Initialize, all secrets are 'secret', do not set session, and do not redirect
-$context = new BLTI(getSecret(), true, false);
-$sessid = session_id();
-
+// Get our session setup
+$context = moduleContext();
 if ( ! $context->valid ) {
-    echo("<p>This tool must be launched using IMS LTI from a Learning Management System.");
-    if ( $SALT == 'secret' ) {
-	echo("  All secrets are 'secret'.</p>\n");
-    } else {
-        echo(" Send your desired key to the site owner to get your secret.\n");
-    }
-    return;
+   die("Session failure ".$_SERVER['PHP_SELF']);
 }
 
-?>
-<html>
-<head><title>
-<?php echo $context->getCourseName; echo " "; echo $context->getResourceTitle(); ?>
-</title> 
-<?php
-foreach ( $context->getCSS() as $css ) {
-    echo '<link rel="stylesheet" type="text/css" href="'.$css.'" />'."\n";
-}
-?>
-</head> 
-<body>
-<?php
+// Switch to view / controller
+headerContent();
+flashMessages();
+require_once "dropbox_util.php";
 
 $foldername = getFolderName($context);
 if ( !file_exists($foldername) ) mkdir ( $foldername);

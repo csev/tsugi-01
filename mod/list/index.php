@@ -22,6 +22,9 @@ if(!empty($_POST['task_id']) )
     $context->redirect('index.php');
     return;
 }
+
+// Start of controller/view
+headerContent();
 flashMessages();
 echo "<form method='post'>";
 echo '<table border="0" style="border-style:outset; border-width:2px; border-color:white;" >' . "\n";
@@ -39,4 +42,6 @@ echo "</tr>\n";
 <br/>
 <input type='submit' value='Delete finished tasks' name='delete' id='delete'/></form>
 <a href=add.php>Add New Task</a>
+<?php
+footerContent();
 

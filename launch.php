@@ -41,8 +41,8 @@ $_SESSION['_context_consumer_id'] = $CFG->localkeyid;
 
 $_SESSION['_lti_context'] = Array(
             'oauth_consumer_key' => 'local',
-            'resource_link_id' => 'rlid-1234',
-            'resource_link_title' => 'This Week',
+            'resource_link_id' => $_REQUEST['mod'].'001',
+            'resource_link_title' => '',
             'resource_link_description' => 'Please complete this',
             'user_id' => $user['lkey'],
             'roles' => ( $member['roleid'] == 0 ) ? 'Instructor' : 'Learner',

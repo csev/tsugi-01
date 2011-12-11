@@ -16,7 +16,7 @@ if ( isset($_POST['reset']) ) {
 }
 
 // Switch to view / controller
-headContent();
+headerContent();
 flashMessages();
 
 ?>
@@ -25,15 +25,10 @@ flashMessages();
 <input type="submit" name='add' value="Add One">
 <input type="submit" name='reset' value="Reset Variable">
 </form>
-<h2>Debug Dump</h2>
-<pre>
 <?php
-print "Context Information:\n\n";
-print $context->dump();
-print "\n\nSESSION\n";
-print_r($_SESSION);
-?>
-</pre>
-</body>
-</html>
+debugLog("Context Information:");
+debugLog($context->dump());
+debugLog("\nSESSION",$_SESSION);
+
+footerContent();
 

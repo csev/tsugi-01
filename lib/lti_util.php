@@ -328,6 +328,7 @@ class LTI {
 			$location = $url;
 		}
 
+        debugLog("=====>> Redirecting to: ".$location);
 		if ( headers_sent() ) {
 			echo('<a href="'.htmlentities($location).'">Continue</a>'."\n");
 		} else {
@@ -880,33 +881,29 @@ function setupPrimaryKeysPDO($db, $context)
     unset($_SESSION['_context_resource_key']);
     unset($_SESSION['_context_resource_id']);
 
-    if ( strlen($context->getUserLKey()) < 1 ) die('user_id is required');
-    if ( strlen($context->getCourseLKey()) < 1 ) die('context_id is required');
-    if ( strlen($context->getResourceLKey()) < 1 ) die('resource_link_id is required');
+    if ( strlen($context->getUserLKey()) < 1 ) lmsDie('user_id is required');
+    if ( strlen($context->getCourseLKey()) < 1 ) lmsDie('context_id is required');
+    if ( strlen($context->getResourceLKey()) < 1 ) lmsDie('resource_link_id is required');
 
-    $sql = "SELECT * FROM LTI_Users WHERE lkey=? AND key_id=? LIMIT 1";
-    $q = $db->prepare($sql);
-    $success = $q->execute(Array($context->getUserLKey(), $context->getConsumerID()));
+    $q = pdoRun($db,"SELECT * FROM LTI_Users WHERE lkey=? AND key_id=? LIMIT 1",
+        Array($context->getUserLKey(), $context->getConsumerID()));
     $user = $q->fetch();
     if ( isset($user['id']) ) {
         if ( $user['name'] != $context->getUserName() || $user['image'] != $context->getUserImage() || 
              $user['email'] != $context->getUserEmail()) {
-			$sql = "UPDATE LTI_Users SET name=?, image=?, email=? WHERE id=? AND key_id=?";
-            $q = $db->prepare($sql);
-            $success = $q->execute(Array($context->getUserName(), $context->getUserImage(), 
+			$q = pdoRun($db,"UPDATE LTI_Users SET name=?, image=?, email=? WHERE id=? AND key_id=?",
+                Array($context->getUserName(), $context->getUserImage(), 
 				$context->getUserEmail(), $user['id'], $context->getConsumerID()));
-            if ( $success) $rows = $q->rowCount();
+            if ( ! $q->success ) lmsDie('Unable to update LTI_Resources');
 		}
     } else {
-    	$sql = "INSERT INTO LTI_Users (lkey, key_id, name, image) VALUES (?, ?, ?, ?)";
-        $q = $db->prepare($sql);
-        $success = $q->execute(Array($context->getUserLKey(), $context->getConsumerID(),
+    	$q = pdoRun($db,"INSERT INTO LTI_Users (lkey, key_id, name, image) VALUES (?, ?, ?, ?)",
+            Array($context->getUserLKey(), $context->getConsumerID(),
             $context->getUserName(), $context->getUserImage()));
-    	$rows = @$db->rowCount();
+    	$rows = $db->rowCount();
 		if ( $rows > 0 ) {
-            $sql = "SELECT * FROM LTI_Users WHERE lkey=? AND key_id=? LIMIT 1";
-            $q = $db->prepare($sql);
-            $success = $q->execute(Array($context->getUserLKey(), $context->getConsumerID()));
+            $q = pdoRun($db,"SELECT * FROM LTI_Users WHERE lkey=? AND key_id=? LIMIT 1",
+                Array($context->getUserLKey(), $context->getConsumerID()));
             $user = $q->fetch();
 		}
     }
@@ -915,30 +912,25 @@ function setupPrimaryKeysPDO($db, $context)
 		$_SESSION['_context_user_key'] = $context->getUserLKey();
 		$_SESSION['_context_user_id'] = $user['id'];
 	} else {
-	    die('Unable to set user key '.$sql);
+	    lmsDie('Unable to set user key ');
     }
 
-    $sql = "SELECT * FROM LTI_Courses WHERE lkey=? AND key_id=? LIMIT 1";
-    $q = $db->prepare($sql);
-    $success = $q->execute(Array($context->getCourseLKey(), $context->getConsumerID()));
+    $q = pdoRun($db,"SELECT * FROM LTI_Courses WHERE lkey=? AND key_id=? LIMIT 1",
+        Array($context->getCourseLKey(), $context->getConsumerID()));
     $course = $q->fetch();
     if ( isset($course['id']) ) {
         if ( $course['name'] != $context->getCourseName() ) {
-			$sql = "UPDATE LTI_Courses SET name=? WHERE id=?";
-            $q = $db->prepare($sql);
-            $success = $q->execute(Array($context->getCourseName(), $course['id']));
-			if ( $success) $rows = $db->rowCount();
+			$q = pdoRun($db,"UPDATE LTI_Courses SET name=? WHERE id=?",
+                Array($context->getCourseName(), $course['id']));
+            if ( ! $q->success ) lmsDie('Unable to update LTI_Course');
 		}
     } else {
-    	$sql = "INSERT INTO LTI_Courses (lkey, key_id, name) VALUES (?, ?, ?)";
-        $q = $db->prepare($sql);
-        $success = $q->execute(Array($context->getCourseLKey(), $context->getConsumerID(), 
-            $context->getCourseName()));
-		if ( $success) $rows = $db->rowCount();
+    	$q = pdoRun($db,"INSERT INTO LTI_Courses (lkey, key_id, name) VALUES (?, ?, ?)",
+            Array($context->getCourseLKey(), $context->getConsumerID(), $context->getCourseName()));
+		if ( $q->success) $rows = $db->rowCount();
 		if ( $rows > 0 ) {
-            $sql = "SELECT * FROM LTI_Courses WHERE lkey=? AND key_id=? LIMIT 1";
-            $q = $db->prepare($sql);
-            $success = $q->execute(Array($context->getCourseLKey(), $context->getConsumerID()));
+            $q = pdoRun($db,"SELECT * FROM LTI_Courses WHERE lkey=? AND key_id=? LIMIT 1",
+                Array($context->getCourseLKey(), $context->getConsumerID()));
             $course = $q->fetch();
 		}
     }
@@ -947,32 +939,27 @@ function setupPrimaryKeysPDO($db, $context)
 		$_SESSION['_context_course_key'] = $context->getCourseLKey();
 		$_SESSION['_context_course_id'] = $course['id'];
 	} else {
-	    die('Unable to set course key '.$sql);
+	    lmsDie('Unable to set course key');
 	}
 
-    $sql = "SELECT * FROM LTI_Resources WHERE lkey=? AND course_id=? LIMIT 1";
-    $q = $db->prepare($sql);
-    $success = $q->execute(Array($context->getResourceLKey(), $context->getCourseID()));
+    $q = pdoRun($db,"SELECT * FROM LTI_Resources WHERE lkey=? AND course_id=? LIMIT 1",
+        Array($context->getResourceLKey(), $context->getCourseID()));
     $resource = $q->fetch();
     if ( isset($resource['id']) ) {
         if ( $resource['name'] != $context->getResourceTitle() || $resource['service'] != $context->getOutcomeService() ) {
-			$sql = "UPDATE LTI_Resources SET name=?, service=? WHERE id=? AND course_id=?";
-            $q = $db->prepare($sql);
-			$success = $q->execute(Array($context->getResourceTitle(), $context->getOutcomeService(), 
-                $context->getCourseID(), $resource['id']));
-			if ( $success) $rows = $db->rowCount();
+			$q = pdoRun($db,"UPDATE LTI_Resources SET name=?, service=? WHERE id=? AND course_id=?",
+                Array($context->getResourceTitle(), $context->getOutcomeService(), $resource['id'], $context->getCourseID()));
+            if ( ! $q->success ) lmsDie('Unable to update LTI_Resources');
 		}
     } else {
-    	$sql = "INSERT INTO LTI_Resources (lkey, course_id, name, service) VALUES (?, ?, ?, ?)";
-        $q = $db->prepare($sql);
-        $success = $q->execute(Array($context->getResourceLKey(), $context->getCourseID(),
-            $context->getResourceTitle(), $context->getOutcomeService()));
-    	$rows = @$db->exec($sql);
-
+    	$q = pdoRun($db,"INSERT INTO LTI_Resources (lkey, course_id, name, service) VALUES (?, ?, ?, ?)",
+            Array($context->getResourceLKey(), $context->getCourseID(),
+            $context->getResourceTitle(), $context->getOutcomeService())
+        );
+		if ( $q->success) $rows = $q->rowCount();
 		if ( $rows > 0 ) {
-            $sql = "SELECT * FROM LTI_Resources WHERE lkey=? AND course_id=? LIMIT 1";
-            $q = $db->prepare($sql);
-            $success = $q->execute(Array($context->getResourceLKey(), $context->getCourseID()));
+            $q = pdoRun($db,"SELECT * FROM LTI_Resources WHERE lkey=? AND course_id=? LIMIT 1",
+                Array($context->getResourceLKey(), $context->getCourseID()));
             $resource = $q->fetch();
 		}
     }
@@ -981,7 +968,7 @@ function setupPrimaryKeysPDO($db, $context)
 		$_SESSION['_context_resource_key'] = $context->getResourceLKey();
 		$_SESSION['_context_resource_id'] = $resource['id'];
 	} else {
-	    die('Unable to set resource key '.$sql);
+	    lmsDie('Unable to set resource key ');
 	}
     //echo("<pre>\nFROM POST\n");print_r($_SESSION);echo("</pre>\n");
 }

@@ -1,6 +1,6 @@
 <?php
 define('COOKIE_SESSION', true);
-require_once "db.php";
+require_once "../../db.php";
 session_start();
 
 requireLogin();
@@ -32,9 +32,14 @@ if ( strlen($course['name']) > 0 ) $title = $course['name'];
 userMenu($title);
 flashMessages();
 ?>
+<!--
 <iframe name="basicltiLaunchFrame"  id="basicltiLaunchFrame" 
   src="launch.php?id=<?php echo($_GET['id']); ?>&mod=<?php echo($_GET['mod']); ?>"
   width="100%" height="550" scrolling="auto" frameborder="1" transparency>
 <p>frames_required</p>
 </iframe>
+-->
+<?php
+require_once($CFG->dirroot.'/mod/'.$_GET['mod'].'/index.php');
+?>
 

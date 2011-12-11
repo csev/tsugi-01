@@ -118,6 +118,8 @@ function pdoRun($db, $sql, $arr=FALSE) {
     $success = FALSE;
     $message = '';
     if ( $arr !== FALSE && ! is_array($arr) ) $arr = Array($arr);
+    $start = microtime(true);
+    debugLog($sql, $arr);
     try {
         $q = $db->prepare($sql);
         if ( $arr === FALSE ) {
@@ -134,6 +136,11 @@ function pdoRun($db, $sql, $arr=FALSE) {
     $q->success = $success;
     if ( !isset($q->errorCode) ) $q->errorCode = '42000';
     if ( !isset($q->errorInfo) ) $q->errorInfo = Array('42000', '42000', $message);
+    if ( $success ) {
+        debugLog("Rows:".$q->rowCount()." Time:".(microtime(true)-$start));
+    } else {
+        debugLog("Code:".$q->errorCode." ".$q->errorInfo[2]);
+    }
     return $q;
 }
 

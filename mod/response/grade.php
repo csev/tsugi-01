@@ -93,7 +93,7 @@ if ( $_POST['grade'] || $_POST['note'] ) {
 }
 
 // Switch to view / controller
-headContent();
+headerContent();
 flashMessages();
 ?>
 <form  method="post">
@@ -118,11 +118,4 @@ echo("</p>\n");
 echo("</form>\n");
 echo('<br clear="all"/>');
 
-/*
-print "\n<pre>\n";
-print "Context Information:\n\n";
-print $context->dump();
-print "\n\nSESSION\n";
-print_r($_SESSION);
-print "\n</pre>\n";
-*/
+footerContent();

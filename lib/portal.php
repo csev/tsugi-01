@@ -40,7 +40,7 @@ function requireAdmin() {
     }
 }
 
-function headContent($head=false) {
+function headerContent($head=false) {
     global $HEAD_CONTENT_SENT;
     global $CFG;
     if ( $HEAD_CONTENT_SENT === true ) return;
@@ -62,7 +62,7 @@ function headContent($head=false) {
 function adminMenu() {
     requireAdmin();
     global $CFG;
-    headContent();
+    headerContent();
     echo('<div id="adminheader">');
     echo('<h1>Admin Functions</h1>');
     echo("<ul>\n");
@@ -74,7 +74,7 @@ function adminMenu() {
 
 function userMenu($title=false) {
     global $CFG;
-    headContent();
+    headerContent();
     $modules = getModules();
     echo('<div id="header">');
     if ( $title === false ) $title = 'L.M.S.';
@@ -99,6 +99,22 @@ function userMenu($title=false) {
     }
     echo("</ul>\n");
     echo("</div>\n");
+}
+
+function footerContent() {
+    global $CFG;
+    $debug = debugDump();
+    if ( $CFG->development === TRUE ) {
+        if ( strlen($debug) > 0 ) { ?>
+<br/>
+<a href="#" onclick="$('#debugpre').toggle();return false;" style="position: fixed; right:0; bottom:0;">Debug Log</a>
+<pre id="debugpre" style="display: none;">
+<?php echo($debug); ?>
+</pre>
+<?php
+        }
+    }
+    echo("</body>\n</html>\n");
 }
 
 function addSession($location) {

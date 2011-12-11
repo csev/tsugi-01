@@ -55,7 +55,7 @@ if ( $_POST['response'] ) {
 }
 
 // Switch to view / controller
-headContent();
+headerContent();
 flashMessages();
 
 if ( $context->isInstructor() ) {
@@ -108,11 +108,4 @@ if ( $response ) {
 <input type="submit" value="Submit">
 </form>
 <?php
-/*
-print "\n<pre>\n";
-print "Context Information:\n\n";
-print $context->dump();
-print "\n\nSESSION\n";
-print_r($_SESSION);
-print "\n</pre>\n";
-*/
+footerContent();

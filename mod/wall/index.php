@@ -26,6 +26,7 @@ $q->execute();
 $first = true;
 
 flashMessages();
+headerContent();
 
 getPostFileList($db);
 ?>
@@ -73,4 +74,5 @@ if ( $first ) {
 ?>
 </div>
 </div>
-</body>
+<?php
+footerContent();
