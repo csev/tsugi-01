@@ -82,7 +82,7 @@ function userMenu($title=false) {
     echo('<div id="header">');
     if ( $title === false && strlen($_SESSION['_context_course_key']) > 0 ) $title = $_SESSION['_context_course_key'];
     if ( $title === false ) $title = 'L.M.S.';
-    echo('<h1><a href="http://www.imsglobal.org/" target="_new">'.$title.'</a></h1>');
+    echo('<h1><a href="http://www.imsglobal.org/" target="_new"><img src="'.$CFG->wwwroot.'/static/image/logo.png" alt="l.m.s." width="200" height="30"/></a></h1>');
     echo('<ul>');
     if ( strlen($_SESSION['user_name']) > 0 ) {
         $id = $_GET['id'];
