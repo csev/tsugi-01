@@ -4,6 +4,9 @@ session_start();
 
 requireLogin();
 
+$tool = $_REQUEST['mod'];
+if ( strlen($tool) < 1 ) $tool = $_REQUEST['tool'];
+
 if ( ! isset($_GET['id']) ) {
     $_SESSION['err'] = 'Missing value for id';
     header( 'Location: error.php' ) ;
@@ -40,7 +43,7 @@ $_SESSION['_context_consumer_id'] = $CFG->localkeyid;
 
 $_SESSION['_lti_context'] = Array(
             'oauth_consumer_key' => 'local',
-            'resource_link_id' => $_REQUEST['mod'].'001',
+            'resource_link_id' => $tool.'001',
             'resource_link_title' => '',
             'resource_link_description' => 'Please complete this',
             'user_id' => $user['lkey'],
@@ -67,7 +70,10 @@ echo("</pre>\n");
 */
 
 // Do this by hand to switch away from cookie based sessions.
-$location = addSession('mod/'.$_REQUEST['mod'].'/index.php');
+$location = 'mod/'.$tool.'/index.php';
+if ( strlen($_REQUEST['tool']) > 0 ) $location = 'tool/'.$tool.'/index.php';
+
+$location = addSession($location);
 doRedirect($location);
 
 

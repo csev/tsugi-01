@@ -34,7 +34,8 @@ while ( $q && $row = $q->fetch() ) {
     if ( $module === false ) {
         echo('No Modules Found.');
     } else {
-        echo('<a href="tool/'.$module.'/index.php">Launch</a> ');
+        // echo('<a href="tool/'.$module.'/index.php">Launch</a> ');
+        echo('(<a href="course.php?id='.htmlentities($row[2]).'&tool='.$module.'">Launch</a>) ');
         echo('(<a href="course.php?id='.htmlentities($row[2]).'&mod='.$module.'"
                     style="font-size: small; color: gray;">In Frame</a>) ');
 

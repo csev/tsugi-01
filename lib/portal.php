@@ -80,6 +80,7 @@ function userMenu($title=false) {
     headerContent();
     $modules = getModules();
     echo('<div id="header">');
+    if ( $title === false && strlen($_SESSION['_context_course_key']) > 0 ) $title = $_SESSION['_context_course_key'];
     if ( $title === false ) $title = 'L.M.S.';
     echo('<h1><a href="http://www.imsglobal.org/" target="_new">'.$title.'</a></h1>');
     echo('<ul>');
