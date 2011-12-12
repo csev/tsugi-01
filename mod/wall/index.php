@@ -31,7 +31,7 @@ flashMessages();
 
 getPostFileList($db);
 ?>
-
+<div id="announcement-feed">
 <body style="font-family: century gothic;">
 <center>
 <form  method="post">
@@ -65,6 +65,7 @@ while ( $q && $row = $q->fetch() ) {
     echo('<tr><td><a href="index.php?reply?='.$row[0].'">Reply</a></td></tr></table>');
     echo("</td></tr></table>");
     echo("</td></tr>\n");
+    
 }
 
 if ( $first ) {
@@ -73,7 +74,6 @@ if ( $first ) {
     echo("</table></center>\n");
 }
 ?>
-</div>
 </div>
 <?php
 footerContent();

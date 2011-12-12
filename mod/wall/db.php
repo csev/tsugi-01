@@ -21,6 +21,13 @@ makeTable($db, 'User_Files', Array(
 	)
 );
 
-
+makeTable($db, 'Replies', Array(
+    'id:key',
+    'announcement_id:integer',
+    'user_id:integer',
+    'data:text:maxlength=2048',
+    'datetime:text:maxlength=50',
+	)
+);
 
 ?>
