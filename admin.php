@@ -1,6 +1,5 @@
 <?php
 header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
-define('COOKIE_SESSION', true);
 require_once("config.php");
 
 try {

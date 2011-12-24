@@ -1,15 +1,13 @@
 <?php
 require_once("../../config.php");
-require_once $CFG->dirroot.'/lib/lti_util.php';
-require_once 'response_util.php';
 
-// Get our session setup without a cookie
-$context = establishContext();
-
+// Get our context setup
+$context = moduleContext();
 if ( ! $context->valid ) {
-   die("Basic LTI Session failure ".$_SERVER['PHP_SELF']);
+   die("Session failure ".$_SERVER['PHP_SELF']);
 }
 
+// Model Section - Handle any input data
 if ( isset($_REQUEST['cancel']) ) $context->redirect('index.php');
 
 if ( ! $context->isInstructor() ) {
@@ -18,30 +16,27 @@ if ( ! $context->isInstructor() ) {
 
 if ( !isset($_REQUEST['response_id']) ) die("Missing required parameter");
 
-require_once $CFG->dirroot.'/db.php';
-require_once $CFG->dirroot.'/pdo_util.php';
-
-setupPrimaryKeys($db, $context);
-
 // Security Note:
 // This will only work if we are grading the response for the resource associated
 // With this context/launch/ etc - We take the ResourceID from the context
 
-$sql = sprintf("SELECT * FROM Responses JOIN LTI_Users JOIN LTI_Resources 
-        ON Responses.user_id = LTI_Users.id AND Responses.resource_id = LTI_Resources.id
-        WHERE resource_id=%s AND Responses.id=%s\n",
-    $db->quote($context->getResourceID()), $db->quote($_REQUEST['response_id']) );
-$q = @$db->query($sql);
+$q = pdoRun($db,
+    "SELECT * FROM Responses JOIN LTI_Users JOIN LTI_Resources 
+    ON Responses.user_id = LTI_Users.id AND Responses.resource_id = LTI_Resources.id
+    WHERE resource_id=? AND Responses.id=?",
+    Array($context->getResourceID(), $_REQUEST['response_id'])
+);
 $response = $q->fetch();
 if ( ! $response ) die("Response not found");
-// print "\n<pre>\n"; print_r($response); print "\n</pre>\n";
+// print "\n<pre>\n"; print_r($response); print "\n</pre>\n";flush();
 
 if ( $_POST['grade'] || $_POST['note'] ) {
     if ($_POST['grade'] != $response['grade'] || $_POST['note'] != $response['note'] ) {
-        $sql = sprintf("UPDATE Responses SET note=%s, grade=%s WHERE id=%s\n",
-            $db->quote($_POST['note']), $db->quote($_POST['grade']),
-            $db->quote($_REQUEST['response_id']));
-        $rows = $db->exec($sql);
+        $q = pdoRun($db,
+            "UPDATE Responses SET note=?, grade=? WHERE id=?",
+            Array($_POST['note'], $_POST['grade'],$_REQUEST['response_id'])
+        );
+        if ($q->success) $rows = $q->rowCount();
         if ( $rows < 1 ) {
             $_SESSION['err'] = 'Unable to update Grade';
             $context->redirect('index.php');
@@ -97,26 +92,9 @@ if ( $_POST['grade'] || $_POST['note'] ) {
     return;
 }
 
-header('Content-Type: text/html; charset=utf-8');
-?>
-<html>
-<head><title>
-<?php echo $context->getCourseName; echo " "; echo $context->getResourceTitle(); ?>
-</title> 
-<?php doCSS($context); ?>
-</head> 
-<body>
-<?php
-if ( isset($_SESSION['err']) ) {
-    echo '<p style="color:red">'.$_SESSION['err']."</p>\n";
-    unset($_SESSION['err']);
-}
-if ( isset($_SESSION['success']) ) {
-    echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
-    unset($_SESSION['success']);
-}
-
-
+// Switch to view / controller
+headerContent();
+flashMessages();
 ?>
 <form  method="post">
 <div style="float:right">
@@ -140,11 +118,4 @@ echo("</p>\n");
 echo("</form>\n");
 echo('<br clear="all"/>');
 
-/*
-print "\n<pre>\n";
-print "Context Information:\n\n";
-print $context->dump();
-print "\n\nSESSION\n";
-print_r($_SESSION);
-print "\n</pre>\n";
-*/
+footerContent();

@@ -1,0 +1,3 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteRule ^tool/(.*)$ mod/$1

@@ -1,11 +1,9 @@
 <?php
-require_once "db.php";
+require_once "../../db.php";
 session_start();
 
 requireLogin();
 
-$tool = $_REQUEST['mod'];
-if ( strlen($tool) < 1 ) $tool = $_REQUEST['tool'];
 
 if ( ! isset($_GET['id']) ) {
     $_SESSION['err'] = 'Missing value for id';
@@ -13,8 +11,8 @@ if ( ! isset($_GET['id']) ) {
     return;
 }
 
-if ( strlen($tool) < 1 ) {
-    $_SESSION['err'] = 'Missing value for mod/tool';
+if ( ! isset($_GET['mod']) ) {
+    $_SESSION['err'] = 'Missing value for mod';
     header( 'Location: error.php' ) ;
     return;
 }
@@ -29,19 +27,19 @@ if ( ! $course ) {
     header( 'Location: error.php' ) ;
     return;
 }
-
-debugClear();
-if ( strlen($_REQUEST['tool']) > 0 ) {
-    $location = 'launch.php?id='.$_GET['id'].'&tool='.$tool;
-    doRedirect($location);
-    return;
-}
 if ( strlen($course['name']) > 0 ) $title = $course['name'];
 userMenu($title);
 flashMessages();
 ?>
+<!--
 <iframe name="basicltiLaunchFrame"  id="basicltiLaunchFrame" 
   src="launch.php?id=<?php echo($_GET['id']); ?>&mod=<?php echo($_GET['mod']); ?>"
   width="100%" height="550" scrolling="auto" frameborder="1" transparency>
 <p>frames_required</p>
 </iframe>
+-->
+<hr clear="all"/>
+<?php
+require_once($CFG->dirroot.'/mod/'.$_GET['mod'].'/index.php');
+?>
+

@@ -1,25 +1,16 @@
 <?php
 require_once("../../config.php");
-require_once $CFG->dirroot.'/lib/lti_util.php';
-require_once 'response_util.php';
 
-// Get our session setup without a cookie
-$context = establishContext();
-
+// Get our session setup
+$context = moduleContext();
 if ( ! $context->valid ) {
-   die("Basic LTI Session failure ".$_SERVER['PHP_SELF']);
+   die("Session failure ".$_SERVER['PHP_SELF']);
 }
 
-require_once $CFG->dirroot.'/db.php';
-require_once $CFG->dirroot.'/pdo_util.php';
-
-setupPrimaryKeys($db, $context);
-
 if ( $_POST['response'] ) {
-    $sql = sprintf("SELECT * FROM Responses WHERE resource_id=%s AND user_id=%s LIMIT 1\n",
-            $db->quote($context->getResourceID()), $db->quote($context->getUserID()) );
-    
-    $q = @$db->query($sql);
+    $q = pdoRun($db, 
+        "SELECT * FROM Responses WHERE resource_id=? AND user_id=? LIMIT 1", 
+        Array($context->getResourceID(), $context->getUserID()) );
     $response = $q->fetch();
     if ( $response ) {
 
@@ -29,17 +20,17 @@ if ( $_POST['response'] ) {
               $response['sourcedid'] != $context->getOutcomeSourceDID() ) ) {
 
             if ( strlen($context->getOutcomeSourceDID()) > 0 ) {
-                $sql = sprintf("UPDATE Responses SET data=%s, sourcedid=%s 
-                                WHERE resource_id=%s AND user_id=%s\n",
-                    $db->quote($_POST['response']), $db->quote($context->getOutcomeSourceDID()),
-                    $db->quote($context->getResourceID()), $db->quote($context->getUserID()) );
+                $q = pdoRun($db,
+                    "UPDATE Responses SET data=?, sourcedid=? WHERE resource_id=? AND user_id=?",
+                    Array($_POST['response'], $context->getOutcomeSourceDID(),
+                            $context->getResourceID(), $context->getUserID()) 
+                );
             } else {
-                $sql = sprintf("UPDATE Responses SET data=%s WHERE resource_id=%s AND user_id=%s\n",
-                    $db->quote($_POST['response']), 
-                    $db->quote($context->getResourceID()), $db->quote($context->getUserID()) );
+                $q = pdoRun($db,"UPDATE Responses SET data=? WHERE resource_id=? AND user_id=?",
+                    Array($_POST['response'], $context->getResourceID(), $context->getUserID()) 
+                );
             }
-            // echo($sql);flush();
-            $rows = $db->exec($sql);
+            if ($q->success) $rows = $q->rowCount();
             if ( $rows > 0 ) {
                 $_SESSION['success'] = 'Data updated';
             } else { 
@@ -47,12 +38,12 @@ if ( $_POST['response'] ) {
             }
         }
     } else {
-        $sql = sprintf("INSERT INTO Responses (resource_id, user_id, data, sourcedid) 
-                        VALUES (%s, %s, %s, %s)\n",
-            $db->quote($context->getResourceID()), $db->quote($context->getUserID()),
-            $db->quote($_POST['response']), $db->quote($context->getOutcomeSourceDID()) );
-        // echo($sql);flush();
-        $rows = $db->exec($sql);
+        $q = pdoRun($db,
+            "INSERT INTO Responses (resource_id, user_id, data, sourcedid) VALUES (?, ?, ?, ?)",
+            Array($context->getResourceID(), $context->getUserID(),
+            $_POST['response'], $context->getOutcomeSourceDID()) 
+        );
+        if ($q->success) $rows = $q->rowCount();
         if ( $rows > 0 ) {
             $_SESSION['success'] = 'Data inserted';
         } else { 
@@ -63,32 +54,15 @@ if ( $_POST['response'] ) {
     return;
 }
 
-header('Content-Type: text/html; charset=utf-8');
-?>
-<html>
-<head><title>
-<?php echo $context->getCourseName; echo " "; echo $context->getResourceTitle(); ?>
-</title> 
-<?php doCSS($context); ?>
-<script type="text/javascript" src="<?php echo($CFG->wwwroot); ?>/static/js/jquery.min.js">
-</script>
-</head> 
-<body>
-<?php
-if ( isset($_SESSION['err']) ) {
-    echo '<p style="color:red">'.$_SESSION['err']."</p>\n";
-    unset($_SESSION['err']);
-}
-if ( isset($_SESSION['success']) ) {
-    echo '<p style="color:green">'.$_SESSION['success']."</p>\n";
-    unset($_SESSION['success']);
-}
+// Switch to view / controller
+headerContent();
+flashMessages();
 
 if ( $context->isInstructor() ) {
-    $sql = sprintf("SELECT * FROM Responses JOIN LTI_Users
-                    ON Responses.user_id = LTI_Users.id WHERE resource_id=%s\n",
-            $db->quote($context->getResourceID()));
-    $q = @$db->query($sql);
+    $sql = "SELECT * FROM Responses JOIN LTI_Users
+                    ON Responses.user_id = LTI_Users.id WHERE resource_id=?";
+    $q = $db->prepare($sql);
+    $success = $q->execute(Array($context->getResourceID()));
     $first = true;
     while ( $response = $q->fetch() ) {
         if ( $first ) {
@@ -116,10 +90,10 @@ if ( $context->isInstructor() ) {
     }
 }
 
-$sql = sprintf("SELECT * FROM Responses WHERE resource_id=%s AND user_id=%s LIMIT 1\n",
-        $db->quote($context->getResourceID()), $db->quote($context->getUserID()) );
-
-$q = @$db->query($sql);
+$q = pdoRun($db,
+    "SELECT * FROM Responses WHERE resource_id=? AND user_id=? LIMIT 1",
+    Array($context->getResourceID(), $context->getUserID())
+);
 $response = $q->fetch();
 $text = false;
 if ( $response ) {
@@ -134,11 +108,4 @@ if ( $response ) {
 <input type="submit" value="Submit">
 </form>
 <?php
-/*
-print "\n<pre>\n";
-print "Context Information:\n\n";
-print $context->dump();
-print "\n\nSESSION\n";
-print_r($_SESSION);
-print "\n</pre>\n";
-*/
+footerContent();
