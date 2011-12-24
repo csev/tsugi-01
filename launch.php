@@ -1,9 +1,11 @@
 <?php
-define('COOKIE_SESSION', true);
 require_once "db.php";
 session_start();
 
 requireLogin();
+
+$tool = $_REQUEST['mod'];
+if ( strlen($tool) < 1 ) $tool = $_REQUEST['tool'];
 
 if ( ! isset($_GET['id']) ) {
     $_SESSION['err'] = 'Missing value for id';
@@ -41,8 +43,8 @@ $_SESSION['_context_consumer_id'] = $CFG->localkeyid;
 
 $_SESSION['_lti_context'] = Array(
             'oauth_consumer_key' => 'local',
-            'resource_link_id' => 'rlid-1234',
-            'resource_link_title' => 'This Week',
+            'resource_link_id' => $tool.'001',
+            'resource_link_title' => '',
             'resource_link_description' => 'Please complete this',
             'user_id' => $user['lkey'],
             'roles' => ( $member['roleid'] == 0 ) ? 'Instructor' : 'Learner',
@@ -51,7 +53,7 @@ $_SESSION['_lti_context'] = Array(
             'lis_person_sourcedid' => 'localhost.edu::'.$user['id'],
             'context_id' => $course['lkey'],
             'context_title' => $course['name'],
-            'context_label' => $course['lkey'],
+            'context_label' => $course['name'],
             'tool_consumer_info_product_family_code' => 'ims',
             'tool_consumer_info_version' => '1.1',
             'tool_consumer_instance_guid' => 'www.imsglobal.org',
@@ -68,7 +70,10 @@ echo("</pre>\n");
 */
 
 // Do this by hand to switch away from cookie based sessions.
-$location = addSession('mod/response/index.php');
+$location = 'mod/'.$tool.'/index.php';
+if ( strlen($_REQUEST['tool']) > 0 ) $location = 'tool/'.$tool.'/index.php';
+
+$location = addSession($location);
 doRedirect($location);
 
 
